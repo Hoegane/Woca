@@ -6,6 +6,9 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_word_card.*
 class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
+    //TODO : modify view to allow user to swipe cards in a tinder way
+    //TODO : integrate the word colors
+
     private var cards:MutableList<Card> = mutableListOf()
     private var current_word_id:Int = 0
 

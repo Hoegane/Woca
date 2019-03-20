@@ -8,6 +8,8 @@ import android.util.Log
 
 class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
 
+    //TODO : add a "favorite/learned" boolean to the "card" table
+
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE $CARD_TABLE_NAME " +
                 "($CARD_ID Integer PRIMARY KEY," +

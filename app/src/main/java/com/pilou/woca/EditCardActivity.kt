@@ -11,6 +11,10 @@ import android.widget.Toast
 
 class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
+    //TODO : add color picker
+    //TODO : use this activity to edit existing cards
+    //TODO : Modify the sub part of the card to make it prettier
+
     var bouboucolor:Int = 0
 
     var dbHandler: DatabaseHandler? = null
