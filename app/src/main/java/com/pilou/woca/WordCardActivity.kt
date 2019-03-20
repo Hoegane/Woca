@@ -22,7 +22,6 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
         bt_show_word.setOnClickListener(this)
         bt_next_word.setOnClickListener(this)
 
-        /*init()*/
         cards = dbHandler!!.getAllCards()
         displayWord(current_word_id)
     }
@@ -59,12 +58,6 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
-
-    /*fun init() {
-        cards.add(Card()
-        cards.add(Card(1, Word("a Dad", 0, ""), tmp2))
-        cards.add(Card(2, Word("a Son", 0, ""), tmp3))
-    }*/
 
     fun displayWord(id:Int){
         tv_word.text = cards[id].word
