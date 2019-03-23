@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (view.id) {
             R.id.bt_show_word_card -> startActivity(Intent(this, WordCardActivity::class.java))
             R.id.bt_add_word -> startActivity(Intent(this, EditCardActivity::class.java))
-            R.id.bt_show_all_words -> Log.e("boubou", dbHandler!!.getAllCardsString())
+            R.id.bt_show_all_words -> startActivity(Intent(this, AllWordsActivity::class.java))
         }
     }
 }

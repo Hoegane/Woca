@@ -67,6 +67,11 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         return (Integer.parseInt("$_success") != -1)
     }
 
+    fun deleteCard(card: Card): Boolean {
+        val db = this.writableDatabase
+        return db.delete(CARD_TABLE_NAME, CARD_ID + "=" + card.id, null) > 0
+    }
+
     fun getAllCards(): MutableList<Card> {
         var allCards = mutableListOf<Card>()
         val db = readableDatabase
@@ -77,6 +82,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                 do {
                     var card = Card()
 
+                    card.id = cursor.getString(cursor.getColumnIndex(CARD_ID)).toInt()
                     card.deck_id = cursor.getString(cursor.getColumnIndex(CARD_DECK_ID)).toInt()
                     card.word = cursor.getString(cursor.getColumnIndex(CARD_WORD))
                     card.word_color = cursor.getString(cursor.getColumnIndex(CARD_WORD_COLOR)).toInt()
