@@ -12,6 +12,8 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     //TODO : modify view to allow user to swipe cards in a tinder way
     //TODO : integrate the word colors
     //TODO : allow users to edit cards
+    //TODO : add button reverse
+    //TODO : let cards to display translations and hide word
 
     private var cards:MutableList<Card> = mutableListOf()
     private var current_word_id:Int = 0

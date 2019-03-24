@@ -7,20 +7,36 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/app_bar_main"
-        tools:context=".MainActivity" android:gravity="center|center_horizontal">
+        tools:context=".MainActivity" android:gravity="center|center_horizontal" android:orientation="vertical">
 
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:gravity="right">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="100dp"
+            android:gravity="right">
+
+        <TextView
+                android:id="@+id/tv_deck_label"
+                android:text="Deck label"
+                android:textSize="30sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right">
         <Button
+                android:id="@+id/bt_show_word_card"
                 android:text="MONTRER CARTES"
                 android:textSize="16dp"
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_base_background"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
-                android:id="@+id/bt_show_word_card"
                 android:layout_marginStart="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"

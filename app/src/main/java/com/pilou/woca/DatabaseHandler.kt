@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 
 class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
 
@@ -27,7 +28,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                 "$CARD_TRANSLATION_3_COLOR Integer," +
                 "$CARD_TRANSLATION_3_EXAMPLE TEXT)")
 
-        db?.execSQL("DECK_TABLE_NAME TABLE $CARD_TABLE_NAME " +
+        db?.execSQL("CREATE TABLE $DECK_TABLE_NAME " +
                 "($DECK_ID Integer PRIMARY KEY," +
                 "$DECK_LABEL TEXT, " +
                 "$DECK_IMAGE_PATH_1 TEXT, " +
@@ -145,9 +146,75 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         return allCards
     }
 
+    fun addDeck(deck: Deck): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues()
+
+        values.put(DECK_LABEL, deck.label)
+        values.put(DECK_IMAGE_PATH_1, deck.img_path_1)
+        values.put(DECK_IMAGE_PATH_2, deck.img_path_2)
+
+        val _success = db.insert(DECK_TABLE_NAME, null, values)
+        db.close()
+        Log.v("InsertedID", "$_success")
+        return (Integer.parseInt("$_success") != -1)
+    }
+
+    fun updateDeck(deck: Deck): Boolean {
+        /*val db = this.writableDatabase
+        val values = ContentValues()
+
+        values.put(DECK_LABEL, deck.label)
+        values.put(DECK_IMAGE_PATH_1, deck.img_path_1)
+        values.put(DECK_IMAGE_PATH_2, deck.img_path_2)
+
+        val _success = db.insert(DECK_TABLE_NAME, null, values)
+        db.close()
+        Log.v("InsertedID", "$_success")
+        return (Integer.parseInt("$_success") != -1)*/
+        return true
+    }
+
+    fun deleteDeck(deck: Deck): Boolean {
+        val db = this.writableDatabase
+        return db.delete(DECK_TABLE_NAME, DECK_ID + "=" + deck.id, null) > 0
+    }
+
+    fun getAllDecks(): MutableList<Deck> {
+        var allDecks = mutableListOf<Deck>()
+        val db = readableDatabase
+        val selectALLQuery = "SELECT * FROM $DECK_TABLE_NAME"
+        val cursor = db.rawQuery(selectALLQuery, null)
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    var deck = Deck()
+
+                    deck.id = cursor.getString(cursor.getColumnIndex(DECK_ID)).toInt()
+                    deck.label = cursor.getString(cursor.getColumnIndex(DECK_LABEL))
+                    deck.img_path_1 = cursor.getString(cursor.getColumnIndex(DECK_IMAGE_PATH_1))
+                    deck.img_path_2 = cursor.getString(cursor.getColumnIndex(DECK_IMAGE_PATH_2))
+
+                    allDecks.add(deck)
+                } while (cursor.moveToNext())
+            }
+        }
+        cursor.close()
+        if (allDecks.size == 0) {
+            var deck = Deck()
+            deck.label = "Default label"
+            addDeck(deck)
+            allDecks.add(deck)
+            Log.e("Dbhandler - getAllDecks", "Default deck created")
+        }
+
+        db.close()
+        return allDecks
+    }
+
     companion object {
         private val DB_NAME = "CardsDB"
-        private val DB_VERSIOM = 3
+        private val DB_VERSIOM = 4
 
         private val CARD_TABLE_NAME = "card"
         private val CARD_ID = "id"

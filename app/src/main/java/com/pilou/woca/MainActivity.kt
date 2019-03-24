@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -18,8 +19,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //TODO : Handle decks of cards
     //TODO : decks backup in firebase ?
+    //TODO : button random to see cards in a random sorting
+    //TODO : save the current deck id
+    //TODO : edit deck information
 
     var dbHandler: DatabaseHandler? = null
+    var current_deck_id:Int = 0
+    var decks:MutableList<Deck> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +33,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         dbHandler = DatabaseHandler(this)
+        decks = dbHandler!!.getAllDecks()
+
+        tv_deck_label.text = decks[current_deck_id].label
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -60,6 +69,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             R.id.action_settings -> return true
+            R.id.action_edit_deck -> {
+                Toast.makeText(applicationContext, "Edit deck label", Toast.LENGTH_SHORT).show()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
