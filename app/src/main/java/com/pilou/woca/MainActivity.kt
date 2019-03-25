@@ -5,11 +5,12 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -50,11 +51,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START))
             super.onBackPressed()
-        }
+        else
+            drawer_layout.openDrawer(GravityCompat.START)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -70,7 +70,40 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.action_settings -> return true
             R.id.action_edit_deck -> {
-                Toast.makeText(applicationContext, "Edit deck label", Toast.LENGTH_SHORT).show()
+                val alert = AlertDialog.Builder(this)
+                var etDeckLabel: EditText
+
+                with (alert) {
+                    //setTitle("Title of Alert")
+
+                    etDeckLabel=EditText(context)
+                    etDeckLabel.hint="Deck label"
+                    //editTextAge!!.inputType = InputType.TYPE_CLASS_NUMBER
+
+                    setPositiveButton("OK") { dialog, whichButton ->
+                        val newDeckLabel = etDeckLabel.text.toString()
+                        if (newDeckLabel != "") {
+                            var deck = decks[current_deck_id]
+                            deck.label = newDeckLabel
+                            dbHandler!!.updateDeck(deck)
+                            tv_deck_label.text = newDeckLabel
+                            //showMessage("display the game score or anything!")
+                            dialog.dismiss()
+                        }
+                        else
+                            Toast.makeText(applicationContext, "Le nouveau label du paquet ne peut pas être vide", Toast.LENGTH_SHORT).show()
+                    }
+
+                    setNegativeButton("Cancel") { dialog, whichButton ->
+                        //showMessage("Close the game or anything!")
+                        dialog.dismiss()
+                    }
+                }
+
+                val dialog = alert.create()
+                dialog.setView(etDeckLabel)
+                dialog.show()
+
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -96,7 +129,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.bt_show_word_card -> startActivity(Intent(this, WordCardActivity::class.java))
+            R.id.bt_show_word_card -> {
+                if (dbHandler!!.getCardsNumber(current_deck_id) != 0)
+                    startActivity(Intent(this, WordCardActivity::class.java))
+                else
+                    Toast.makeText(applicationContext, "Il n'y a pas de cartes dans le paquet", Toast.LENGTH_SHORT).show()
+            }
             R.id.bt_add_word -> startActivity(Intent(this, EditCardActivity::class.java))
             R.id.bt_show_all_words -> startActivity(Intent(this, AllWordsActivity::class.java))
         }

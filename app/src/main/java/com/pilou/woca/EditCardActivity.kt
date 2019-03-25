@@ -56,7 +56,7 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
             R.id.bt_save_new_card -> {
                 if (et_word.text.toString() != "" && et_translation_1.text.toString() != "") {
                     var card = Card()
-                    card.deck_id = 0
+                    card.deck_id = 0 //TODO : REMPLACER PAR LA VALEUR DU DECH COURANT
                     card.word = et_word.text.toString()
                     card.word_color = 0
                     card.word_example = et_word_example.text.toString()

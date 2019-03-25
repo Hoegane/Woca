@@ -5,8 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import android.widget.Toast
-
 class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
 
     //TODO : add a "favorite/learned" boolean to the "card" table
@@ -39,6 +37,21 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         db!!.execSQL("DROP TABLE " + CARD_TABLE_NAME + ";")
         db.execSQL("DROP TABLE " + DECK_TABLE_NAME + ";")
         onCreate(db)
+    }
+
+    fun getCardsNumber(deck_id:Int):Int {
+        val db = this.writableDatabase
+        val selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_DECK_ID = $deck_id"
+        val cursor = db.rawQuery(selectALLQuery, null)
+        var size = 0
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    size++
+                } while (cursor.moveToNext())
+            }
+        }
+        return size
     }
 
     fun addCard(card: Card): Boolean {
@@ -161,18 +174,17 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     fun updateDeck(deck: Deck): Boolean {
-        /*val db = this.writableDatabase
+        val db = this.writableDatabase
         val values = ContentValues()
 
         values.put(DECK_LABEL, deck.label)
         values.put(DECK_IMAGE_PATH_1, deck.img_path_1)
         values.put(DECK_IMAGE_PATH_2, deck.img_path_2)
 
-        val _success = db.insert(DECK_TABLE_NAME, null, values)
+        val _success = db.update(DECK_TABLE_NAME, values, "id="+deck.id, null)
         db.close()
         Log.v("InsertedID", "$_success")
-        return (Integer.parseInt("$_success") != -1)*/
-        return true
+        return (Integer.parseInt("$_success") != -1)
     }
 
     fun deleteDeck(deck: Deck): Boolean {
