@@ -20,9 +20,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //TODO : Handle decks of cards
     //TODO : decks backup in firebase ?
-    //TODO : button random to see cards in a random sorting
     //TODO : save the current deck id
-    //TODO : edit deck information
+    //TODO : edit deck information (label ok, img nok)
 
     var dbHandler: DatabaseHandler? = null
     var current_deck_id:Int = 0

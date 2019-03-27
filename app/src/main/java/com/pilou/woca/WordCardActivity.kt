@@ -21,6 +21,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     private var cards:MutableList<Card> = mutableListOf()
     private var current_word_id:Int = 0
     private var showWordAndHideTranslation = true
+    private var randomifierTab = arrayOf(Int)
 
     var dbHandler: DatabaseHandler? = null
 
@@ -35,7 +36,10 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
         bt_show_word.setOnClickListener(this)
         bt_next_word.setOnClickListener(this)
 
+
+
         cards = dbHandler!!.getAllCards()
+        cards.shuffle()
         displayWord(current_word_id)
     }
 
@@ -47,7 +51,6 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId) {
             R.id.menu_reverse -> {
-                Toast.makeText(applicationContext, "reverse", Toast.LENGTH_SHORT).show()
                 if (showWordAndHideTranslation) {
                     ll_card_traduction.visibility = View.VISIBLE
                     ll_card_word.visibility = View.INVISIBLE
@@ -57,6 +60,9 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 showWordAndHideTranslation = !showWordAndHideTranslation
 
+                current_word_id = 0
+                cards.shuffle()
+                displayWord(current_word_id)
             }
             R.id.menu_edit_card -> Toast.makeText(applicationContext, "edit", Toast.LENGTH_SHORT).show()
             R.id.menu_delete_card -> {

@@ -8,6 +8,8 @@ import kotlinx.android.synthetic.main.activity_all_words.*
 
 class AllWordsActivity : AppCompatActivity() {
 
+    //TODO : add a 'search' feature
+
     private lateinit var adapter: AllWordsAdapter
     private var cards:MutableList<Card> = mutableListOf()
 
