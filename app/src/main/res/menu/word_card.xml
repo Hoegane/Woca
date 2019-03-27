@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_mark_as_learned"
+        android:title="Marquer comme appris"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_checked_48_white"/>
+    <item
         android:id="@+id/menu_reverse"
-        android:title=""
+        android:title="Inverser"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_reverse_48"/>
     <item
         android:id="@+id/menu_edit_card"
-        android:title=""
+        android:title="Modifier"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_edit_52"/>
 
     <item
         android:id="@+id/menu_delete_card"
-        android:title=""
+        android:title="Supprimer"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_delete_60"/>
 

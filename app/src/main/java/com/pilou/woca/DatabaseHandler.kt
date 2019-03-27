@@ -87,6 +87,40 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         return (Integer.parseInt("$_success") != -1)
     }
 
+    fun updateCard(card: Card): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues()
+
+        values.put(CARD_DECK_ID, card.deck_id)
+        values.put(CARD_WORD, card.word)
+        values.put(CARD_WORD_COLOR, card.word_color)
+        values.put(CARD_WORD_EXAMPLE, card.word_example)
+
+        Log.e("updateCard", card.id.toString() + "/" + card.word + " : " + card.is_learned)
+
+        if (card.is_learned)
+            values.put(CARD_IS_LEARNED, 1)
+        else
+            values.put(CARD_IS_LEARNED, 0)
+
+        values.put(CARD_TRANSLATION_1, card.translation_1)
+        values.put(CARD_TRANSLATION_1_COLOR, card.translation_1_color)
+        values.put(CARD_TRANSLATION_1_EXAMPLE, card.translation_1_example)
+
+        values.put(CARD_TRANSLATION_2, card.translation_2)
+        values.put(CARD_TRANSLATION_2_COLOR, card.translation_2_color)
+        values.put(CARD_TRANSLATION_2_EXAMPLE, card.translation_2_example)
+
+        values.put(CARD_TRANSLATION_3, card.translation_3)
+        values.put(CARD_TRANSLATION_3_COLOR, card.translation_3_color)
+        values.put(CARD_TRANSLATION_3_EXAMPLE, card.translation_3_example)
+
+        val _success = db.update(CARD_TABLE_NAME, values, "id="+card.id, null)
+        db.close()
+        Log.v("card updated", "$_success")
+        return (Integer.parseInt("$_success") != -1)
+    }
+
     fun deleteCard(card: Card): Boolean {
         val db = this.writableDatabase
         return db.delete(CARD_TABLE_NAME, CARD_ID + "=" + card.id, null) > 0
@@ -108,7 +142,12 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                     card.word_color = cursor.getString(cursor.getColumnIndex(CARD_WORD_COLOR)).toInt()
                     card.word_example = cursor.getString(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
 
-                    card.is_learned = cursor.getString(cursor.getColumnIndex(CARD_WORD_EXAMPLE))!!.toBoolean()
+                    if (cursor.getInt(cursor.getColumnIndex(CARD_IS_LEARNED)) == 0)
+                        card.is_learned = false
+                    else
+                        card.is_learned = true
+                    //Log.e(">>", card.id.toString() + " - " + card.word + ":" + tmp)
+                    //card.is_learned = cursor.getInt(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
 
                     card.translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
                     card.translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR)).toInt()

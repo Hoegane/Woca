@@ -17,12 +17,11 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     //TODO : modify view to allow user to swipe cards in a tinder way
     //TODO : integrate the word colors
     //TODO : allow users to edit cards
-    //TODO : include the feature 'mark word as learned'
+    //TODO : finish the feature 'mark word as learned'
 
     private var cards:MutableList<Card> = mutableListOf()
     private var current_word_id:Int = 0
     private var showWordAndHideTranslation = true
-    private var randomifierTab = arrayOf(Int)
 
     var dbHandler: DatabaseHandler? = null
 
@@ -36,8 +35,6 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
         bt_previous_word.setOnClickListener(this)
         bt_show_word.setOnClickListener(this)
         bt_next_word.setOnClickListener(this)
-
-
 
         cards = dbHandler!!.getAllCards()
         cards.shuffle()
@@ -64,6 +61,16 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 current_word_id = 0
                 cards.shuffle()
                 displayWord(current_word_id)
+            }
+            R.id.menu_mark_as_learned ->  {
+                var card = cards[current_word_id]
+                card.is_learned = !card.is_learned
+                if (card.is_learned)
+                    Toast.makeText(applicationContext, "Mark as learned", Toast.LENGTH_SHORT).show()
+                else
+                    Toast.makeText(applicationContext, "Mark as unknown", Toast.LENGTH_SHORT).show()
+                dbHandler!!.updateCard(card)
+
             }
             R.id.menu_edit_card -> Toast.makeText(applicationContext, "edit", Toast.LENGTH_SHORT).show()
             R.id.menu_delete_card -> {
