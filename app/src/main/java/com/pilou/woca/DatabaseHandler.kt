@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
 
-    //TODO : add a "favorite/learned" boolean to the "card" table
+    private val DATABASE_ALTER_TABLE_CARD_1 = ("ALTER TABLE " + CARD_TABLE_NAME + " ADD COLUMN " + CARD_IS_LEARNED + " INTEGER DEFAULT 0;")
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE $CARD_TABLE_NAME " +
@@ -16,6 +16,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                 "$CARD_WORD TEXT, " +
                 "$CARD_WORD_COLOR Integer," +
                 "$CARD_WORD_EXAMPLE TEXT," +
+                "$CARD_IS_LEARNED INTEGER DEFAULT 0," +
                 "$CARD_TRANSLATION_1 TEXT," +
                 "$CARD_TRANSLATION_1_COLOR Integer," +
                 "$CARD_TRANSLATION_1_EXAMPLE TEXT," +
@@ -34,9 +35,12 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db!!.execSQL("DROP TABLE " + CARD_TABLE_NAME + ";")
-        db.execSQL("DROP TABLE " + DECK_TABLE_NAME + ";")
-        onCreate(db)
+        if (oldVersion < 5) {
+            db!!.execSQL(DATABASE_ALTER_TABLE_CARD_1);
+        }
+        //db!!.execSQL("DROP TABLE " + CARD_TABLE_NAME + ";")
+        //db.execSQL("DROP TABLE " + DECK_TABLE_NAME + ";")
+        //onCreate(db)
     }
 
     fun getCardsNumber(deck_id:Int):Int {
@@ -62,6 +66,8 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         values.put(CARD_WORD, card.word)
         values.put(CARD_WORD_COLOR, card.word_color)
         values.put(CARD_WORD_EXAMPLE, card.word_example)
+
+        values.put(CARD_IS_LEARNED, card.is_learned)
 
         values.put(CARD_TRANSLATION_1, card.translation_1)
         values.put(CARD_TRANSLATION_1_COLOR, card.translation_1_color)
@@ -102,6 +108,8 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                     card.word_color = cursor.getString(cursor.getColumnIndex(CARD_WORD_COLOR)).toInt()
                     card.word_example = cursor.getString(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
 
+                    card.is_learned = cursor.getString(cursor.getColumnIndex(CARD_WORD_EXAMPLE))!!.toBoolean()
+
                     card.translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
                     card.translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR)).toInt()
                     card.translation_1_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_EXAMPLE))
@@ -136,6 +144,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                     val word = cursor.getString(cursor.getColumnIndex(CARD_WORD))
                     val word_color = cursor.getString(cursor.getColumnIndex(CARD_WORD_COLOR))
                     val word_example = cursor.getString(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
+                    val is_learned = cursor.getString(cursor.getColumnIndex(CARD_IS_LEARNED))
 
                     val translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
                     val translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR))
@@ -150,7 +159,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                     val translation_3_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_COLOR))
                     val translation_3_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_EXAMPLE))
 
-                    allCards = "$allCards\n$id $deck_id $word $word_color $word_example $translation_1 $translation_1_color $translation_1_example $translation_2 $translation_2_color $translation_2_example $translation_3 $translation_3_color $translation_3_example"
+                    allCards = "$allCards\n$id $deck_id $word $word_color $word_example $is_learned $translation_1 $translation_1_color $translation_1_example $translation_2 $translation_2_color $translation_2_example $translation_3 $translation_3_color $translation_3_example"
                 } while (cursor.moveToNext())
             }
         }
@@ -226,7 +235,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
 
     companion object {
         private val DB_NAME = "CardsDB"
-        private val DB_VERSIOM = 4
+        private val DB_VERSIOM = 5
 
         private val CARD_TABLE_NAME = "card"
         private val CARD_ID = "id"
@@ -234,6 +243,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         private val CARD_WORD = "word"
         private val CARD_WORD_COLOR = "word_color"
         private val CARD_WORD_EXAMPLE = "word_example"
+        private val CARD_IS_LEARNED = "is_learned"
 
         private val CARD_TRANSLATION_1 = "translation_1"
         private val CARD_TRANSLATION_1_COLOR = "translation_1_color"

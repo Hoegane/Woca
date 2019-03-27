@@ -2,6 +2,7 @@ package com.pilou.woca
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.AdapterView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_all_words.*
@@ -21,8 +22,11 @@ class AllWordsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_all_words)
         dbHandler = DatabaseHandler(this)
 
+        Log.e(">> AllWordsActivity", dbHandler!!.getAllCardsString())
+
         cards = dbHandler!!.getAllCards()
 
+        Log.e(">> AllWordsActivity", "boubou : " + cards[0].is_learned)
         adapter = AllWordsAdapter(this, cards)
         lv_all_words.adapter = adapter
         lv_all_words.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
