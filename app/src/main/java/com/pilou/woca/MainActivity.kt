@@ -78,11 +78,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                     etDeckLabel=EditText(context)
                     etDeckLabel.hint="Deck label"
+                    etDeckLabel.setText(tv_deck_label.text.toString())
                     //editTextAge!!.inputType = InputType.TYPE_CLASS_NUMBER
 
                     setPositiveButton("OK") { dialog, whichButton ->
                         val newDeckLabel = etDeckLabel.text.toString()
-                        if (newDeckLabel != "") {
+                        if (newDeckLabel == "")
+                            Toast.makeText(applicationContext, "Le nouveau label du paquet ne peut pas être vide", Toast.LENGTH_SHORT).show()
+                        else if (newDeckLabel == tv_deck_label.text)
+                            Toast.makeText(applicationContext, "Le nouveau label doit etre différent du précédent", Toast.LENGTH_SHORT).show()
+                        else {
                             var deck = decks[current_deck_id]
                             deck.label = newDeckLabel
                             dbHandler!!.updateDeck(deck)
@@ -90,8 +95,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             //showMessage("display the game score or anything!")
                             dialog.dismiss()
                         }
-                        else
-                            Toast.makeText(applicationContext, "Le nouveau label du paquet ne peut pas être vide", Toast.LENGTH_SHORT).show()
                     }
 
                     setNegativeButton("Cancel") { dialog, whichButton ->
@@ -130,7 +133,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onClick(view: View) {
         when (view.id) {
             R.id.bt_show_word_card -> {
-                if (dbHandler!!.getCardsNumber(current_deck_id) != 0)
+                if (dbHandler!!.getDeckSize(current_deck_id) != 0)
                     startActivity(Intent(this, WordCardActivity::class.java))
                 else
                     Toast.makeText(applicationContext, "Il n'y a pas de cartes dans le paquet", Toast.LENGTH_SHORT).show()

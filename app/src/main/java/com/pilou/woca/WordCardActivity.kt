@@ -11,12 +11,15 @@ import kotlinx.android.synthetic.main.activity_word_card.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
+import android.R.attr.key
+import android.content.Intent
+import org.jetbrains.anko.toast
+
 
 class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
     //TODO : modify view to allow user to swipe cards in a tinder way
     //TODO : integrate the word colors
-    //TODO : allow users to edit cards
     //TODO : finish the feature 'mark word as learned'
 
     private var cards:MutableList<Card> = mutableListOf()
@@ -36,8 +39,22 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
         bt_show_word.setOnClickListener(this)
         bt_next_word.setOnClickListener(this)
 
-        cards = dbHandler!!.getAllCards()
-        cards.shuffle()
+        //cards = dbHandler!!.getAllCards()
+        //cards.shuffle()
+        //displayWord(current_word_id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //Toast.makeText(applicationContext, "onResume", Toast.LENGTH_SHORT).show()
+        if (cards.isEmpty()) {
+            cards = dbHandler!!.getAllCards()
+            cards.shuffle()
+        }
+        else
+            cards[current_word_id] = dbHandler!!.getCardById(cards[current_word_id].id)
+
+        //TODO : UPDATE AND DISPLAY THE WORD ONLY IF IT WAS UPDATED FROM THE EDITCARDACTIVITY
         displayWord(current_word_id)
     }
 
@@ -63,7 +80,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 displayWord(current_word_id)
             }
             R.id.menu_mark_as_learned ->  {
-                var card = cards[current_word_id]
+                val card = cards[current_word_id]
                 card.is_learned = !card.is_learned
                 if (card.is_learned)
                     Toast.makeText(applicationContext, "Mark as learned", Toast.LENGTH_SHORT).show()
@@ -72,7 +89,13 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 dbHandler!!.updateCard(card)
 
             }
-            R.id.menu_edit_card -> Toast.makeText(applicationContext, "edit", Toast.LENGTH_SHORT).show()
+            R.id.menu_edit_card -> {
+                val mIntent = Intent(this, EditCardActivity::class.java)
+                val mBundle = Bundle()
+                mBundle.putInt("cardId", cards[current_word_id].id)
+                mIntent.putExtras(mBundle)
+                startActivity(mIntent)
+            }
             R.id.menu_delete_card -> {
 
                 alert("Supprimer cette carte ?", "") {

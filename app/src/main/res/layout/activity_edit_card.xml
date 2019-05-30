@@ -139,6 +139,6 @@
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_base_background"
                 android:layout_width="60dp"
-                android:layout_height="60dp" android:id="@+id/bt_save_new_card"/>
+                android:layout_height="60dp" android:id="@+id/bt_save_card"/>
     </LinearLayout>
 </LinearLayout>

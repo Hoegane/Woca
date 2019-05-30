@@ -1,11 +1,15 @@
 package com.pilou.woca
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.AdapterView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_all_words.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 class AllWordsActivity : AppCompatActivity() {
 
@@ -13,8 +17,8 @@ class AllWordsActivity : AppCompatActivity() {
 
     private lateinit var adapter: AllWordsAdapter
     private var cards:MutableList<Card> = mutableListOf()
-
-    var dbHandler: DatabaseHandler? = null
+    private var lastUpdatedCardPos:Int = -1
+    private var dbHandler: DatabaseHandler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,17 +34,41 @@ class AllWordsActivity : AppCompatActivity() {
         adapter = AllWordsAdapter(this, cards)
         lv_all_words.adapter = adapter
         lv_all_words.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
-            Toast.makeText(applicationContext, cards[position].word, Toast.LENGTH_SHORT).show()
+
+            lastUpdatedCardPos = position
+            val mIntent = Intent(this, EditCardActivity::class.java)
+            val mBundle = Bundle()
+            mBundle.putInt("cardId", cards[position].id)
+            mIntent.putExtras(mBundle)
+            startActivity(mIntent)
         }
 
         lv_all_words.onItemLongClickListener = AdapterView.OnItemLongClickListener{ parent, view, position, id ->
-            Toast.makeText(applicationContext, "Long : " + cards[position].word, Toast.LENGTH_SHORT).show()
+            alert("Supprimer cette carte ?", "") {
+                yesButton {
+                    if (dbHandler!!.deleteCard(cards[position])) {
+                        cards.removeAt(position)
+                        adapter.notifyDataSetChanged()
+
+                        tv_word_count.text = cards.size.toString() + " mots"
+                    }
+                    else
+                        Toast.makeText(applicationContext, "Echec", Toast.LENGTH_SHORT).show()
+                }
+                noButton {}
+            }.show()
             true
         }
 
-        val wordCount = cards.size.toString() + " mots"
-        tv_word_count.text = wordCount
+        tv_word_count.text = cards.size.toString() + " mots"
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        if (lastUpdatedCardPos != -1) {
+            cards[lastUpdatedCardPos] = dbHandler!!.getCardById(cards[lastUpdatedCardPos].id)
+            adapter.notifyDataSetChanged()
+            lastUpdatedCardPos = -1
+        }
+    }
 }

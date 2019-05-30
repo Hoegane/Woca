@@ -6,7 +6,7 @@ class Card {
     var word:String = ""
     var word_color:Int = 0
     var word_example:String = ""
-    var is_learned:Boolean = false
+    var is_learned:Boolean = false 
 
     var translation_1:String = ""
     var translation_1_color:Int = 0

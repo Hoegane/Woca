@@ -43,7 +43,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         //onCreate(db)
     }
 
-    fun getCardsNumber(deck_id:Int):Int {
+    fun getDeckSize(deck_id:Int):Int {
         val db = this.writableDatabase
         val selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_DECK_ID = $deck_id"
         val cursor = db.rawQuery(selectALLQuery, null)
@@ -126,8 +126,44 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         return db.delete(CARD_TABLE_NAME, CARD_ID + "=" + card.id, null) > 0
     }
 
+    fun getCardById(card_id:Int):Card {
+        val card = Card()
+        val db = readableDatabase
+        val selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_ID = $card_id"
+        val cursor = db.rawQuery(selectALLQuery, null)
+        if (cursor != null) {
+            cursor.moveToFirst()
+
+            card.id = cursor.getString(cursor.getColumnIndex(CARD_ID)).toInt()
+            card.deck_id = cursor.getString(cursor.getColumnIndex(CARD_DECK_ID)).toInt()
+            card.word = cursor.getString(cursor.getColumnIndex(CARD_WORD))
+            card.word_color = cursor.getString(cursor.getColumnIndex(CARD_WORD_COLOR)).toInt()
+            card.word_example = cursor.getString(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
+
+            if (cursor.getInt(cursor.getColumnIndex(CARD_IS_LEARNED)) == 0)
+                card.is_learned = false
+            else
+                card.is_learned = true
+
+            card.translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
+            card.translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR)).toInt()
+            card.translation_1_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_EXAMPLE))
+
+            card.translation_2 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2))
+            card.translation_2_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_COLOR)).toInt()
+            card.translation_2_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_EXAMPLE))
+
+            card.translation_3 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3))
+            card.translation_3_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_COLOR)).toInt()
+            card.translation_3_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_EXAMPLE))
+        }
+        cursor.close()
+        db.close()
+        return card
+    }
+
     fun getAllCards(): MutableList<Card> {
-        var allCards = mutableListOf<Card>()
+        val allCards = mutableListOf<Card>()
         val db = readableDatabase
         val selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME"
         val cursor = db.rawQuery(selectALLQuery, null)
