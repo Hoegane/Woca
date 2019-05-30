@@ -13,6 +13,7 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
     //TODO : add color picker
     //TODO : Modify the sub part of the card to make it prettier
+    //Todo : test
 
     private var bouboucolor:Int = 0
     private var cardId:Int = -1
