@@ -16,6 +16,7 @@ class AllWordsActivity : AppCompatActivity() {
     //TODO : add a 'search' feature
 
     private lateinit var adapter: AllWordsAdapter
+    private var deckId:Int = -1
     private var cards:MutableList<Card> = mutableListOf()
     private var lastUpdatedCardPos:Int = -1
     private var dbHandler: DatabaseHandler? = null
@@ -26,11 +27,9 @@ class AllWordsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_all_words)
         dbHandler = DatabaseHandler(this)
 
-        Log.e(">> AllWordsActivity", dbHandler!!.getAllCardsString())
+        deckId = intent.getIntExtra("deckId",-1)
+        cards = dbHandler!!.getCardsFromDeck(deckId)
 
-        cards = dbHandler!!.getAllCards()
-
-        Log.e(">> AllWordsActivity", "boubou : " + cards[0].is_learned)
         adapter = AllWordsAdapter(this, cards)
         lv_all_words.adapter = adapter
         lv_all_words.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
@@ -39,6 +38,7 @@ class AllWordsActivity : AppCompatActivity() {
             val mIntent = Intent(this, EditCardActivity::class.java)
             val mBundle = Bundle()
             mBundle.putInt("cardId", cards[position].id)
+            mBundle.putInt("deckId", deckId)
             mIntent.putExtras(mBundle)
             startActivity(mIntent)
         }

@@ -23,6 +23,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     //TODO : finish the feature 'mark word as learned'
 
     private var cards:MutableList<Card> = mutableListOf()
+    private var deckId:Int = -1
     private var current_word_id:Int = 0
     private var showWordAndHideTranslation = true
 
@@ -39,6 +40,8 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
         bt_show_word.setOnClickListener(this)
         bt_next_word.setOnClickListener(this)
 
+        deckId = intent.getIntExtra("deckId",-1)
+
         //cards = dbHandler!!.getAllCards()
         //cards.shuffle()
         //displayWord(current_word_id)
@@ -47,7 +50,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         if (cards.isEmpty()) {
-            cards = dbHandler!!.getAllCards()
+            cards = dbHandler!!.getCardsFromDeck(deckId)
             cards.shuffle()
         }
         else
@@ -92,6 +95,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 val mIntent = Intent(this, EditCardActivity::class.java)
                 val mBundle = Bundle()
                 mBundle.putInt("cardId", cards[current_word_id].id)
+                mBundle.putInt("deckId", deckId)
                 mIntent.putExtras(mBundle)
                 startActivity(mIntent)
             }

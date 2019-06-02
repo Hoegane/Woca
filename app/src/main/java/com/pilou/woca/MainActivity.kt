@@ -21,9 +21,9 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
 
-    //TODO : Handle decks of cards
     //TODO : decks backup in firebase ?
-    //TODO : save the current deck id
+    //TODO : Improve the the way the deckId is shared between all activities (global var ?)
+    //TODO : make the var deckId persistent (the app remeber the previous deckId)
     //TODO : edit deck information (label ok, img nok)
 
     var dbHandler: DatabaseHandler? = null
@@ -146,15 +146,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onClick(view: View) {
+        val mBundle = Bundle()
+        mBundle.putInt("deckId", decks[current_deck_pos].id)
+        var mIntent:Intent ?= null
         when (view.id) {
-            R.id.bt_show_word_card -> {
+            R.id.bt_show_word_card ->
                 if (dbHandler!!.getDeckSize(decks[current_deck_pos].id) != 0)
-                    startActivity(Intent(this, WordCardActivity::class.java))
+                    mIntent = Intent(this, WordCardActivity::class.java)
                 else
                     Toast.makeText(applicationContext, "Il n'y a pas de cartes dans le paquet", Toast.LENGTH_SHORT).show()
-            }
-            R.id.bt_add_word -> startActivity(Intent(this, EditCardActivity::class.java))
-            R.id.bt_show_all_words -> startActivity(Intent(this, AllWordsActivity::class.java))
+            R.id.bt_add_word ->  mIntent = Intent(this, EditCardActivity::class.java)
+            R.id.bt_show_all_words -> mIntent = Intent(this, AllWordsActivity::class.java)
+        }
+        if (mIntent != null) {
+            mIntent.putExtras(mBundle)
+            startActivity(mIntent)
         }
     }
 }

@@ -19,6 +19,7 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
     private var bouboucolor:Int = 0
     private var cardId:Int = -1
+    private var deckId:Int = -1
     private var dbHandler: DatabaseHandler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +34,10 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
         bt_save_card.setOnClickListener(this)
         bt_translation_3_color.setOnClickListener(this)
 
-        val bundle = getIntent().extras
-        if (bundle != null) {
-            val card = dbHandler!!.getCardById(intent.getIntExtra("cardId",0))
+        deckId = intent.getIntExtra("deckId",-1)
+        cardId = intent.getIntExtra("cardId",-1)
+        if (cardId != -1) {
+            val card = dbHandler!!.getCardById(cardId)
             cardId = card.id
             et_word.setText(card.word)
             et_word_example.setText(card.word_example)
@@ -85,7 +87,7 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
                 if (et_word.text.toString() != "" && et_translation_1.text.toString() != "") {
                     val card = Card()
                     card.id = cardId
-                    card.deck_id = 0 //TODO : REMPLACER PAR LA VALEUR DU DECK COURANT
+                    card.deck_id = deckId
                     card.word = et_word.text.toString()
                     card.word_color = 0
                     card.word_example = et_word_example.text.toString()

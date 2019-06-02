@@ -165,15 +165,15 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         return card
     }
 
-    fun getAllCardsFromDeck(deckId: Int): MutableList<Card> {
+    fun getCardsFromDeck(deckId: Int): MutableList<Card> {
         val allCards = mutableListOf<Card>()
         val db = readableDatabase
-        val selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WDECK_$DECK_ID = $deckId"
+        val selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_DECK_ID = $deckId"
         val cursor = db.rawQuery(selectALLQuery, null)
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    var card = Card()
+                    val card = Card()
 
                     card.id = cursor.getString(cursor.getColumnIndex(CARD_ID)).toInt()
                     card.deck_id = cursor.getString(cursor.getColumnIndex(CARD_DECK_ID)).toInt()
@@ -217,7 +217,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    var card = Card()
+                    val card = Card()
 
                     card.id = cursor.getString(cursor.getColumnIndex(CARD_ID)).toInt()
                     card.deck_id = cursor.getString(cursor.getColumnIndex(CARD_DECK_ID)).toInt()
@@ -324,14 +324,14 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     fun getAllDecks(): MutableList<Deck> {
-        var allDecks = mutableListOf<Deck>()
+        val allDecks = mutableListOf<Deck>()
         val db = readableDatabase
         val selectALLQuery = "SELECT * FROM $DECK_TABLE_NAME"
         val cursor = db.rawQuery(selectALLQuery, null)
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    var deck = Deck()
+                    val deck = Deck()
 
                     deck.id = cursor.getString(cursor.getColumnIndex(DECK_ID)).toInt()
                     deck.label = cursor.getString(cursor.getColumnIndex(DECK_LABEL))
@@ -344,7 +344,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         }
         cursor.close()
         if (allDecks.size == 0) {
-            var deck = Deck()
+            val deck = Deck()
             deck.label = "Default label"
             addDeck(deck)
             allDecks.add(deck)
