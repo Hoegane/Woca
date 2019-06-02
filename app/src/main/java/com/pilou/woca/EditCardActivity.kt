@@ -8,12 +8,14 @@ import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
+import android.support.v4.app.NavUtils
+import android.view.MenuItem
+
 
 class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
     //TODO : add color picker
     //TODO : Modify the sub part of the card to make it prettier
-    //Todo : test
 
     private var bouboucolor:Int = 0
     private var cardId:Int = -1
@@ -25,15 +27,14 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
         dbHandler = DatabaseHandler(this)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
         bt_save_card.setOnClickListener(this)
         bt_translation_3_color.setOnClickListener(this)
 
         val bundle = getIntent().extras
-        if (bundle == null) {
-            Toast.makeText(this,"Bundle empty", Toast.LENGTH_LONG).show()
-        }
-        else {
+        if (bundle != null) {
             val card = dbHandler!!.getCardById(intent.getIntExtra("cardId",0))
             cardId = card.id
             et_word.setText(card.word)
@@ -44,6 +45,16 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
             et_translation_2_example.setText(card.translation_2_example)
             et_translation_3.setText(card.translation_3)
             et_translation_3_example.setText(card.translation_3_example)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                this.finish()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 
