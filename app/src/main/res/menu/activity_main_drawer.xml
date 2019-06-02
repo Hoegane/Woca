@@ -3,7 +3,20 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <item android:title="Paquets" android:id="@+id/bouboutest">
+        <menu>
+            <item
+                    android:id="@+id/nav_show_all_decks"
+                    android:icon="@drawable/ic_menu_view_all_48"
+                    android:title="All decks"/>
+            <item
+                    android:id="@+id/nav_create_deck"
+                    android:icon="@drawable/ic_plus_48"
+                    android:title="Create deck"/>
+        </menu>
+    </item>
+
+    <!--<group android:checkableBehavior="single">
         <item
                 android:id="@+id/nav_camera"
                 android:icon="@drawable/ic_menu_camera"
@@ -32,11 +45,7 @@
                     android:id="@+id/nav_send"
                     android:icon="@drawable/ic_menu_send"
                     android:title="Send"/>
-            <item
-                    android:id="@+id/nav_create_deck"
-                    android:icon="@drawable/ic_plus_48"
-                    android:title="Create deck"/>
         </menu>
-    </item>
+    </item>-->
 
 </menu>

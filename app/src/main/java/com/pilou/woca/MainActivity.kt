@@ -1,5 +1,6 @@
 package com.pilou.woca
 
+import android.app.TaskStackBuilder
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.SubMenu
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -25,7 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //TODO : edit deck information (label ok, img nok)
 
     var dbHandler: DatabaseHandler? = null
-    var current_deck_id:Int = 0
+    var current_deck_pos:Int = 0
     var decks:MutableList<Deck> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,11 +38,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dbHandler = DatabaseHandler(this)
         decks = dbHandler!!.getAllDecks()
 
-        tv_deck_label.text = decks[current_deck_id].label
+        tv_deck_label.text = decks[current_deck_pos].label
 
-        val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
+        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -48,6 +48,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bt_show_word_card.setOnClickListener(this)
         bt_add_word.setOnClickListener(this)
         bt_show_all_words.setOnClickListener(this)
+
+        var menu:Menu = nav_view.menu
+        var channelMenu:SubMenu = menu.addSubMenu("Paquets")
+        for (deck_pos in 0 until decks.size)
+            channelMenu.add(0, deck_pos, 0, decks[deck_pos].label)
     }
 
     override fun onBackPressed() {
@@ -88,7 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         else if (newDeckLabel == tv_deck_label.text)
                             Toast.makeText(applicationContext, "Le nouveau label doit etre différent du précédent", Toast.LENGTH_SHORT).show()
                         else {
-                            var deck = decks[current_deck_id]
+                            var deck = decks[current_deck_pos]
                             deck.label = newDeckLabel
                             dbHandler!!.updateDeck(deck)
                             tv_deck_label.text = newDeckLabel
@@ -116,14 +121,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
+            /*R.id.nav_camera -> {}
+            R.id.nav_gallery -> {}
+            R.id.nav_slideshow -> {}
+            R.id.nav_manage -> {}
+            R.id.nav_share -> {}
+            R.id.nav_send -> {}*/
+            R.id.nav_show_all_decks -> startActivity(Intent(this, AllDecksActivity::class.java))
+            R.id.nav_create_deck -> {
+                Toast.makeText(applicationContext, "Create deck", Toast.LENGTH_SHORT).show()
+                val deck = Deck()
+                deck.label = "Nouveau deck"
+                dbHandler!!.addDeck(deck)
             }
-            R.id.nav_gallery -> {         }
-            R.id.nav_slideshow -> {           }
-            R.id.nav_manage -> {            }
-            R.id.nav_share -> {            }
-            R.id.nav_send -> {            }
+            else -> {
+                current_deck_pos = item.itemId
+                tv_deck_label.text = decks[item.itemId].label
+
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -133,7 +148,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onClick(view: View) {
         when (view.id) {
             R.id.bt_show_word_card -> {
-                if (dbHandler!!.getDeckSize(current_deck_id) != 0)
+                if (dbHandler!!.getDeckSize(decks[current_deck_pos].id) != 0)
                     startActivity(Intent(this, WordCardActivity::class.java))
                 else
                     Toast.makeText(applicationContext, "Il n'y a pas de cartes dans le paquet", Toast.LENGTH_SHORT).show()

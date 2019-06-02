@@ -46,7 +46,6 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        //Toast.makeText(applicationContext, "onResume", Toast.LENGTH_SHORT).show()
         if (cards.isEmpty()) {
             cards = dbHandler!!.getAllCards()
             cards.shuffle()
