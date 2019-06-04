@@ -23,12 +23,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //TODO : decks backup in firebase ?
     //TODO : Improve the the way the deckId is shared between all activities (global var ?)
-    //TODO : make the var deckId persistent (the app remeber the previous deckId)
+    //TODO : make the var deckId persistent (the app remember the previous deckId)
     //TODO : edit deck information (label ok, img nok)
+    //TODO : improve icon shape, size, and provide a round one
+    //TODO : allow user to change decks order
 
     var dbHandler: DatabaseHandler? = null
-    var current_deck_pos:Int = 0
+    var currentDeckPos:Int = 0
     var decks:MutableList<Deck> = mutableListOf()
+    lateinit var channelMenu:SubMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +41,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dbHandler = DatabaseHandler(this)
         decks = dbHandler!!.getAllDecks()
 
-        tv_deck_label.text = decks[current_deck_pos].label
+        tv_deck_label.text = decks[currentDeckPos].label
 
         val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
@@ -49,8 +52,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bt_add_word.setOnClickListener(this)
         bt_show_all_words.setOnClickListener(this)
 
-        var menu:Menu = nav_view.menu
-        var channelMenu:SubMenu = menu.addSubMenu("Paquets")
+        val menu:Menu = nav_view.menu
+        channelMenu = menu.addSubMenu("Paquets")
         for (deck_pos in 0 until decks.size)
             channelMenu.add(0, deck_pos, 0, decks[deck_pos].label)
     }
@@ -86,23 +89,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     etDeckLabel.setText(tv_deck_label.text.toString())
                     //editTextAge!!.inputType = InputType.TYPE_CLASS_NUMBER
 
-                    setPositiveButton("OK") { dialog, whichButton ->
+                    setPositiveButton("OK") { dialog, _ ->
                         val newDeckLabel = etDeckLabel.text.toString()
                         if (newDeckLabel == "")
                             Toast.makeText(applicationContext, "Le nouveau label du paquet ne peut pas être vide", Toast.LENGTH_SHORT).show()
                         else if (newDeckLabel == tv_deck_label.text)
                             Toast.makeText(applicationContext, "Le nouveau label doit etre différent du précédent", Toast.LENGTH_SHORT).show()
                         else {
-                            var deck = decks[current_deck_pos]
+                            val deck = decks[currentDeckPos]
                             deck.label = newDeckLabel
                             dbHandler!!.updateDeck(deck)
                             tv_deck_label.text = newDeckLabel
+                            channelMenu.getItem(currentDeckPos).title = newDeckLabel
                             //showMessage("display the game score or anything!")
                             dialog.dismiss()
                         }
                     }
 
-                    setNegativeButton("Cancel") { dialog, whichButton ->
+                    setNegativeButton("Cancel") { dialog, _ ->
                         //showMessage("Close the game or anything!")
                         dialog.dismiss()
                     }
@@ -135,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 dbHandler!!.addDeck(deck)
             }
             else -> {
-                current_deck_pos = item.itemId
+                currentDeckPos = item.itemId
                 tv_deck_label.text = decks[item.itemId].label
 
             }
@@ -147,11 +151,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onClick(view: View) {
         val mBundle = Bundle()
-        mBundle.putInt("deckId", decks[current_deck_pos].id)
+        mBundle.putInt("deckId", decks[currentDeckPos].id)
         var mIntent:Intent ?= null
         when (view.id) {
             R.id.bt_show_word_card ->
-                if (dbHandler!!.getDeckSize(decks[current_deck_pos].id) != 0)
+                if (dbHandler!!.getDeckSize(decks[currentDeckPos].id) != 0)
                     mIntent = Intent(this, WordCardActivity::class.java)
                 else
                     Toast.makeText(applicationContext, "Il n'y a pas de cartes dans le paquet", Toast.LENGTH_SHORT).show()
