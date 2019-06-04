@@ -3,7 +3,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
 
-    <item android:title="Paquets" android:id="@+id/bouboutest">
+    <item android:title="Paquets" >
         <menu>
             <item
                     android:id="@+id/nav_show_all_decks"
@@ -13,6 +13,10 @@
                     android:id="@+id/nav_create_deck"
                     android:icon="@drawable/ic_plus_48"
                     android:title="Create deck"/>
+            <item
+                    android:id="@+id/nav_all_cards"
+                    android:icon="@drawable/ic_eye_24"
+                    android:title="All cards"/>
         </menu>
     </item>
 

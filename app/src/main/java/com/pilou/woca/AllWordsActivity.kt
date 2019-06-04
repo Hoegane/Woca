@@ -28,7 +28,10 @@ class AllWordsActivity : AppCompatActivity() {
         dbHandler = DatabaseHandler(this)
 
         deckId = intent.getIntExtra("deckId",-1)
-        cards = dbHandler!!.getCardsFromDeck(deckId)
+        when (deckId) {
+            -1 -> cards = dbHandler!!.getAllCards()
+            else -> cards = dbHandler!!.getCardsFromDeck(deckId)
+        }
 
         adapter = AllWordsAdapter(this, cards)
         lv_all_words.adapter = adapter

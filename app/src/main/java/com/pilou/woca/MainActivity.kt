@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
 
+    //TODO : Allow user to change a card from one deck to another
     //TODO : decks backup in firebase ?
     //TODO : Improve the the way the deckId is shared between all activities (global var ?)
     //TODO : make the var deckId persistent (the app remember the previous deckId)
@@ -138,6 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 deck.label = "Nouveau deck"
                 dbHandler!!.addDeck(deck)
             }
+            R.id.nav_all_cards -> startActivity(Intent(this, AllWordsActivity::class.java))
             else -> {
                 currentDeckPos = item.itemId
                 tv_deck_label.text = decks[item.itemId].label

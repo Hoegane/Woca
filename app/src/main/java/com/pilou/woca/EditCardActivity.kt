@@ -36,6 +36,7 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
         deckId = intent.getIntExtra("deckId",-1)
         cardId = intent.getIntExtra("cardId",-1)
+
         if (cardId != -1) {
             val card = dbHandler!!.getCardById(cardId)
             cardId = card.id
