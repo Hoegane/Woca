@@ -30,7 +30,7 @@ class AllDecksActivity : AppCompatActivity() {
         if (decks.size == 0)
             Log.e("AllDecksActiv - OnCreat", "Pas de decks")
 
-        var array:MutableList<String> = mutableListOf()
+        val array:MutableList<String> = mutableListOf()
         for (deck in decks)
             array.add(deck.label)
 
@@ -38,14 +38,14 @@ class AllDecksActivity : AppCompatActivity() {
 
         lv_all_decks.adapter = adapter
 
-        lv_all_decks.onItemLongClickListener = AdapterView.OnItemLongClickListener{ parent, view, position, id ->
+        lv_all_decks.onItemLongClickListener = AdapterView.OnItemLongClickListener{ _, _, position, _ ->
             alert("Supprimer ce paquet ?", "") {
                 yesButton {
                     if (dbHandler!!.deleteDeck(decks[position])) {
                         decks.removeAt(position)
                         adapter.notifyDataSetChanged()
 
-                        tv_decks_count.text = decks.size.toString() + " mots"
+                        tv_decks_count.text = getString(R.string.all_decks_act_decks_count, decks.size)
                     }
                     else
                         Toast.makeText(applicationContext, "Echec", Toast.LENGTH_SHORT).show()
@@ -55,6 +55,6 @@ class AllDecksActivity : AppCompatActivity() {
             true
         }
 
-        tv_decks_count.text = decks.size.toString() + " mots"
+        tv_decks_count.text = getString(R.string.all_decks_act_decks_count, decks.size)
     }
 }

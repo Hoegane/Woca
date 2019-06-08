@@ -13,6 +13,7 @@
     <string name="action_edit_deck">Edit deck</string>
 
     <string name="all_cards_act_words_count">%d words</string>
+    <string name="all_decks_act_decks_count">%d decks</string>
 
     <string name="word_act_example">Ex : %s</string>
     <string name="word_act_translation_1">1. %s</string>

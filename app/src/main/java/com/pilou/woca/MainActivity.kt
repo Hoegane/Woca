@@ -59,6 +59,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bt_show_word_card.setOnClickListener(this)
         bt_add_word.setOnClickListener(this)
         bt_show_all_words.setOnClickListener(this)
+        bt_stats.setOnClickListener(this)
+        iv_deck_img_1.setOnClickListener(this)
+        iv_deck_img_2.setOnClickListener(this)
 
         val menu:Menu = nav_view.menu
         channelMenu = menu.addSubMenu("Paquets")
@@ -170,10 +173,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Toast.makeText(applicationContext, "Il n'y a pas de cartes dans le paquet", Toast.LENGTH_SHORT).show()
             R.id.bt_add_word ->  mIntent = Intent(this, EditCardActivity::class.java)
             R.id.bt_show_all_words -> mIntent = Intent(this, AllWordsActivity::class.java)
+            R.id.bt_stats -> Toast.makeText(applicationContext, "stats", Toast.LENGTH_SHORT).show()
+            R.id.iv_deck_img_1 -> Toast.makeText(applicationContext, "changer image 1", Toast.LENGTH_SHORT).show()
+            R.id.iv_deck_img_2 -> Toast.makeText(applicationContext, "changer image 2", Toast.LENGTH_SHORT).show()
         }
         if (mIntent != null) {
             mIntent.putExtras(mBundle)
             startActivity(mIntent)
         }
     }
+
+
 }
