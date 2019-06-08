@@ -9,7 +9,9 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
 import android.support.v4.app.NavUtils
+import android.view.Menu
 import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_word_card.*
 
 
 class EditCardActivity : AppCompatActivity(), View.OnClickListener {
@@ -51,14 +53,22 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.edit_card, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
-            android.R.id.home -> {
+        when (item.itemId) {
+            R.id.home -> {
                 this.finish()
                 return true
             }
-            else -> return super.onOptionsItemSelected(item)
+            R.id.menu_change_deck ->  {
+                Toast.makeText(applicationContext, "Change deck", Toast.LENGTH_SHORT).show()
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onClick(view: View) {

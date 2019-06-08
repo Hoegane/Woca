@@ -53,7 +53,7 @@ class AllWordsActivity : AppCompatActivity() {
                         cards.removeAt(position)
                         adapter.notifyDataSetChanged()
 
-                        tv_word_count.text = cards.size.toString() + " mots"
+                        tv_word_count.text = getString(R.string.all_cards_act_words_count, cards.size)
                     }
                     else
                         Toast.makeText(applicationContext, "Echec", Toast.LENGTH_SHORT).show()
@@ -63,7 +63,7 @@ class AllWordsActivity : AppCompatActivity() {
             true
         }
 
-        tv_word_count.text = cards.size.toString() + " mots"
+        tv_word_count.text = getString(R.string.all_cards_act_words_count, cards.size)
     }
 
     override fun onResume() {

@@ -24,10 +24,10 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
     private var cards:MutableList<Card> = mutableListOf()
     private var deckId:Int = -1
-    private var current_word_id:Int = 0
+    private var currentWordId:Int = 0
     private var showWordAndHideTranslation = true
 
-    var dbHandler: DatabaseHandler? = null
+    private var dbHandler: DatabaseHandler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,14 +54,14 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
             cards.shuffle()
         }
         else
-            cards[current_word_id] = dbHandler!!.getCardById(cards[current_word_id].id)
+            cards[currentWordId] = dbHandler!!.getCardById(cards[currentWordId].id)
 
         //TODO : UPDATE AND DISPLAY THE WORD ONLY IF IT WAS UPDATED FROM THE EDITCARDACTIVITY
-        displayWord(current_word_id)
+        displayWord(currentWordId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.word_card, menu)
+        menuInflater.inflate(R.menu.word_card, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -77,12 +77,12 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 showWordAndHideTranslation = !showWordAndHideTranslation
 
-                current_word_id = 0
+                currentWordId = 0
                 cards.shuffle()
-                displayWord(current_word_id)
+                displayWord(currentWordId)
             }
             R.id.menu_mark_as_learned ->  {
-                val card = cards[current_word_id]
+                val card = cards[currentWordId]
                 card.is_learned = !card.is_learned
                 if (card.is_learned)
                     Toast.makeText(applicationContext, "Mark as learned", Toast.LENGTH_SHORT).show()
@@ -94,7 +94,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
             R.id.menu_edit_card -> {
                 val mIntent = Intent(this, EditCardActivity::class.java)
                 val mBundle = Bundle()
-                mBundle.putInt("cardId", cards[current_word_id].id)
+                mBundle.putInt("cardId", cards[currentWordId].id)
                 mBundle.putInt("deckId", deckId)
                 mIntent.putExtras(mBundle)
                 startActivity(mIntent)
@@ -103,15 +103,15 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
                 alert("Supprimer cette carte ?", "") {
                     yesButton {
-                        if (dbHandler!!.deleteCard(cards[current_word_id])) {
-                            cards.removeAt(current_word_id)
-                            if (current_word_id>0) {
-                                current_word_id--
-                                displayWord(current_word_id)
+                        if (dbHandler!!.deleteCard(cards[currentWordId])) {
+                            cards.removeAt(currentWordId)
+                            if (currentWordId>0) {
+                                currentWordId--
+                                displayWord(currentWordId)
                                 Toast.makeText(applicationContext, "delete", Toast.LENGTH_SHORT).show()
                             }
                             else if (cards.size > 0) {
-                                displayWord(current_word_id)
+                                displayWord(currentWordId)
                                 Toast.makeText(applicationContext, "delete", Toast.LENGTH_SHORT).show()
                             }
                             else{
@@ -133,12 +133,12 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
         when (view?.id) {
             R.id.bt_previous_word -> {
                 if (cards.size !=0) {
-                    if (current_word_id == 0)
-                        current_word_id = cards.size - 1
+                    if (currentWordId == 0)
+                        currentWordId = cards.size - 1
                     else
-                        current_word_id--
+                        currentWordId--
                     reinitializeHidingStatus()
-                    displayWord(current_word_id)
+                    displayWord(currentWordId)
                 }
             }
             R.id.bt_show_word -> {
@@ -149,12 +149,12 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.bt_next_word -> {
                 if (cards.size !=0) {
-                    if (current_word_id == cards.size - 1)
-                        current_word_id = 0
+                    if (currentWordId == cards.size - 1)
+                        currentWordId = 0
                     else
-                        current_word_id++
+                        currentWordId++
                     reinitializeHidingStatus()
-                    displayWord(current_word_id)
+                    displayWord(currentWordId)
                 }
             }
         }
@@ -165,16 +165,16 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
         tv_word_number.text = numberOfCards
 
         tv_word.text = cards[id].word
-        tv_word_example.text = "Ex : " + cards[id].word_example
+        tv_word_example.text = getString(R.string.word_act_example,cards[id].word_example)
 
-        tv_transl_1.text = "1. " + cards[id].translation_1
-        tv_transl_1_ex.text = "Ex : " + cards[id].translation_1_example
+        tv_transl_1.text = getString(R.string.word_act_translation_1, cards[id].translation_1)
+        tv_transl_1_ex.text = getString(R.string.word_act_example,cards[id].translation_1_example)
 
-        tv_transl_2.text = "2. " + cards[id].translation_2
-        tv_transl_2_ex.text = "Ex : " + cards[id].translation_2_example
+        tv_transl_2.text = getString(R.string.word_act_translation_2, cards[id].translation_2)
+        tv_transl_2_ex.text = getString(R.string.word_act_example,cards[id].translation_2_example)
 
-        tv_transl_3.text = "3. " + cards[id].translation_3
-        tv_transl_3_ex.text = "Ex : " + cards[id].translation_3_example
+        tv_transl_3.text = getString(R.string.word_act_translation_3, cards[id].translation_3)
+        tv_transl_3_ex.text = getString(R.string.word_act_example,cards[id].translation_3_example)
     }
 
     private fun showOrHide(linearLayout:LinearLayout) {

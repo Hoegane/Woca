@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Woca</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -10,4 +11,11 @@
     <string name="title_activity_edit_card">EditCard</string>
     <string name="title_activity_all_words">Tout le paquet</string>
     <string name="action_edit_deck">Edit deck</string>
+
+    <string name="all_cards_act_words_count">%d words</string>
+
+    <string name="word_act_example">Ex : %s</string>
+    <string name="word_act_translation_1">1. %s</string>
+    <string name="word_act_translation_2">2. %s</string>
+    <string name="word_act_translation_3">3. %s</string>
 </resources>
