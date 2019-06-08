@@ -2,6 +2,7 @@ package com.pilou.woca
 
 import android.app.TaskStackBuilder
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -18,13 +19,15 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import android.R.id.edit
+
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
 
     //TODO : Allow user to change a card from one deck to another
     //TODO : decks backup in firebase ?
     //TODO : Improve the the way the deckId is shared between all activities (global var ?)
-    //TODO : make the var deckId persistent (the app remember the previous deckId)
     //TODO : edit deck information (label ok, img nok)
     //TODO : improve icon shape, size, and provide a round one
     //TODO : allow user to change decks order
@@ -33,6 +36,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var currentDeckPos:Int = 0
     var decks:MutableList<Deck> = mutableListOf()
     lateinit var channelMenu:SubMenu
+    private var mPrefs:SharedPreferences ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +45,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         dbHandler = DatabaseHandler(this)
         decks = dbHandler!!.getAllDecks()
+
+        mPrefs = getSharedPreferences("wocaSharedPreferences", 0)
+        currentDeckPos = mPrefs!!.getInt("currentDeckPos", 0)
 
         tv_deck_label.text = decks[currentDeckPos].label
 
@@ -142,8 +149,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_all_cards -> startActivity(Intent(this, AllWordsActivity::class.java))
             else -> {
                 currentDeckPos = item.itemId
+                mPrefs!!.edit().putInt("currentDeckPos", currentDeckPos).apply()
                 tv_deck_label.text = decks[item.itemId].label
-
             }
         }
 

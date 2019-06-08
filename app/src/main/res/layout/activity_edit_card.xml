@@ -133,14 +133,16 @@
                         android:id="@+id/et_translation_3_example" android:hint="Exemple"/>
             </LinearLayout>
         </ScrollView>
-        <Button
-                android:text="+"
+        <ImageButton
                 android:layout_marginBottom="30dp"
                 android:layout_marginEnd="30dp"
                 android:textSize="30sp"
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_base_background"
                 android:layout_width="60dp"
-                android:layout_height="60dp" android:id="@+id/bt_save_card"/>
+                android:layout_height="60dp"
+                android:src="@drawable/ic_save_24_white"
+                android:id="@+id/bt_save_card" android:scaleType="center" android:adjustViewBounds="false"
+                android:cropToPadding="false" android:padding="10dp"/>
     </LinearLayout>
 </LinearLayout>
