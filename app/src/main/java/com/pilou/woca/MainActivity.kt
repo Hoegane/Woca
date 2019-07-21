@@ -164,6 +164,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 tv_deck_label.text = deck.label
             }
             R.id.nav_all_cards -> startActivity(Intent(this, AllWordsActivity::class.java))
+            R.id.nav_swipe_activity -> startActivity(Intent(this, SwipeActivity::class.java))
             else -> {
                 currentDeckPos = item.itemId
                 mPrefs!!.edit().putInt("currentDeckPos", currentDeckPos).apply()

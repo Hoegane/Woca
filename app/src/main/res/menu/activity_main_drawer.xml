@@ -17,6 +17,10 @@
                     android:id="@+id/nav_all_cards"
                     android:icon="@drawable/ic_eye_24"
                     android:title="All cards"/>
+            <item
+                    android:id="@+id/nav_swipe_activity"
+                    android:icon="@drawable/ic_eye_24"
+                    android:title="Swipe activity"/>
         </menu>
     </item>
 
