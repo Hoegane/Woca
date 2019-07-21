@@ -13,9 +13,7 @@ import org.jetbrains.anko.yesButton
 
 class AllDecksActivity : AppCompatActivity() {
 
-    //TODO : Update dynamically the screen when deleting a deck
-
-    private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var adapter: AllDecksAdapter
     private var decks:MutableList<Deck> = mutableListOf()
     private var dbHandler: DatabaseHandler? = null
 
@@ -34,11 +32,13 @@ class AllDecksActivity : AppCompatActivity() {
         for (deck in decks)
             array.add(deck.label)
 
-        adapter = ArrayAdapter(this, R.layout.ticket_deck, array)
+        //adapter = ArrayAdapter(this, R.layout.ticket_deck, array)
+        adapter = AllDecksAdapter(this, decks)
 
         lv_all_decks.adapter = adapter
 
         lv_all_decks.onItemLongClickListener = AdapterView.OnItemLongClickListener{ _, _, position, _ ->
+            Log.e(">> Allword - longitem", decks[position].label + ", DeckId : " + decks[position].id)
             alert("Supprimer ce paquet ?", "") {
                 yesButton {
                     if (dbHandler!!.deleteDeck(decks[position])) {

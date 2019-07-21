@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.R.id.edit
-
+import org.jetbrains.anko.toast
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
@@ -48,6 +48,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         mPrefs = getSharedPreferences("wocaSharedPreferences", 0)
         currentDeckPos = mPrefs!!.getInt("currentDeckPos", 0)
+
+        if (currentDeckPos >= decks.size) {
+            currentDeckPos = 0
+            mPrefs!!.edit().putInt("currentDeckPos", currentDeckPos).apply()
+        }
 
         tv_deck_label.text = decks[currentDeckPos].label
 
@@ -148,12 +153,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val deck = Deck()
                 deck.label = "Nouveau deck"
                 dbHandler!!.addDeck(deck)
+                //decks.add(deck)
+                decks = dbHandler!!.getAllDecks()
+                Log.e("OnNavItem - create item", "" + decks.size)
+
+                channelMenu.add(0, decks.size-1, 0, deck.label)
+
+                currentDeckPos = decks.size-1
+                mPrefs!!.edit().putInt("currentDeckPos", currentDeckPos).apply()
+                tv_deck_label.text = deck.label
             }
             R.id.nav_all_cards -> startActivity(Intent(this, AllWordsActivity::class.java))
             else -> {
                 currentDeckPos = item.itemId
                 mPrefs!!.edit().putInt("currentDeckPos", currentDeckPos).apply()
-                tv_deck_label.text = decks[item.itemId].label
+                tv_deck_label.text = decks[currentDeckPos].label
+                Log.e("OnNavItem - click deck", "CurrentDeckPos : " + currentDeckPos)
             }
         }
 
@@ -182,6 +197,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(mIntent)
         }
     }
-
 
 }

@@ -5,13 +5,15 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
+
 class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
 
     private val DATABASE_ALTER_TABLE_CARD_1 = ("ALTER TABLE " + CARD_TABLE_NAME + " ADD COLUMN " + CARD_IS_LEARNED + " INTEGER DEFAULT 0;")
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE $CARD_TABLE_NAME " +
-                "($CARD_ID Integer PRIMARY KEY," +
+                "($CARD_ID Integer PRIMARY KEY AUTOINCREMENT," +
                 "$CARD_DECK_ID Integer, " +
                 "$CARD_WORD TEXT, " +
                 "$CARD_WORD_COLOR Integer," +
@@ -28,19 +30,19 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                 "$CARD_TRANSLATION_3_EXAMPLE TEXT)")
 
         db?.execSQL("CREATE TABLE $DECK_TABLE_NAME " +
-                "($DECK_ID Integer PRIMARY KEY," +
+                "($DECK_ID Integer PRIMARY KEY AUTOINCREMENT," +
                 "$DECK_LABEL TEXT, " +
                 "$DECK_IMAGE_PATH_1 TEXT, " +
                 "$DECK_IMAGE_PATH_2 TEXT)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 5) {
-            db!!.execSQL(DATABASE_ALTER_TABLE_CARD_1);
-        }
-        //db!!.execSQL("DROP TABLE " + CARD_TABLE_NAME + ";")
-        //db.execSQL("DROP TABLE " + DECK_TABLE_NAME + ";")
-        //onCreate(db)
+        //if (oldVersion < 5) {
+        //db!!.execSQL(DATABASE_ALTER_TABLE_CARD_1);
+        //}
+        db!!.execSQL("DROP TABLE " + CARD_TABLE_NAME + ";")
+        db.execSQL("DROP TABLE " + DECK_TABLE_NAME + ";")
+        onCreate(db)
     }
 
     fun getDeckSize(deck_id:Int):Int {
@@ -86,7 +88,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
 
         val _success = db.insert(CARD_TABLE_NAME, null, values)
         db.close()
-        Log.v("InsertedID", "$_success")
+        Log.v("Insert Card", "$_success")
         return (Integer.parseInt("$_success") != -1)
     }
 
@@ -298,10 +300,10 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         values.put(DECK_IMAGE_PATH_1, deck.img_path_1)
         values.put(DECK_IMAGE_PATH_2, deck.img_path_2)
 
-        val _success = db.insert(DECK_TABLE_NAME, null, values)
+        val isSuccess = db.insert(DECK_TABLE_NAME, null, values)
         db.close()
-        Log.v("InsertedID", "$_success")
-        return (Integer.parseInt("$_success") != -1)
+        Log.v("Insert Deck", "$isSuccess")
+        return (Integer.parseInt("$isSuccess") != -1)
     }
 
     fun updateDeck(deck: Deck): Boolean {
@@ -312,10 +314,10 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         values.put(DECK_IMAGE_PATH_1, deck.img_path_1)
         values.put(DECK_IMAGE_PATH_2, deck.img_path_2)
 
-        val _success = db.update(DECK_TABLE_NAME, values, "id="+deck.id, null)
+        val isSuccess = db.update(DECK_TABLE_NAME, values, "id="+deck.id, null)
         db.close()
-        Log.v("InsertedID", "$_success")
-        return (Integer.parseInt("$_success") != -1)
+        Log.v("Update Deck", "$isSuccess")
+        return (Integer.parseInt("$isSuccess") != -1)
     }
 
     fun deleteDeck(deck: Deck): Boolean {
@@ -347,7 +349,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
             val deck = Deck()
             deck.label = "Default label"
             addDeck(deck)
-            allDecks.add(deck)
+            allDecks.add(getAllDecks()[0])
             Log.e("Dbhandler - getAllDecks", "Default deck created")
         }
 
@@ -357,7 +359,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
 
     companion object {
         private val DB_NAME = "CardsDB"
-        private val DB_VERSIOM = 5
+        private val DB_VERSIOM = 8
 
         private val CARD_TABLE_NAME = "card"
         private val CARD_ID = "id"

@@ -5,6 +5,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/home/pilou/woca-keystore.jks')
+            keyPassword '3{rg),6uLEeH*4.~%t2z'
+            keyAlias = 'key-woca'
+            storePassword 'jH{#RLNt.ki#Q?(mLz3*'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.pilou.woca"
@@ -13,6 +21,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [:]
     }
     buildTypes {
         release {
@@ -28,11 +37,11 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation 'com.github.madrapps:pikolo:1.1.6'
     implementation "android.arch.persistence.room:runtime:1.1.1"
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13-beta-3'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

@@ -47,6 +47,7 @@ class AllWordsActivity : AppCompatActivity() {
         }
 
         lv_all_words.onItemLongClickListener = AdapterView.OnItemLongClickListener{ parent, view, position, id ->
+            Log.e(">> Allword - onlongite", cards[position].word + ", Card DeckId : " + cards[position].deck_id)
             alert("Supprimer cette carte ?", "") {
                 yesButton {
                     if (dbHandler!!.deleteCard(cards[position])) {
