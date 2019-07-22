@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/lightPink"
-        tools:context=".WordCardActivity"
-        android:orientation="vertical">
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="30dp">
 
     <LinearLayout
             android:orientation="vertical"
@@ -18,11 +15,14 @@
             android:layout_height="match_parent" android:layout_weight="1">
 
         <TextView
+                android:id="@+id/tv_word_number"
                 android:paddingTop="20dp"
                 android:paddingEnd="20dp"
                 android:text="?/?"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/tv_word_number" android:textAlignment="viewEnd"/>
+                android:layout_height="wrap_content"
+                android:textAlignment="viewEnd"/>
+
         <LinearLayout
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
@@ -30,17 +30,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" android:gravity="center_horizontal" android:layout_weight="1"
                 android:id="@+id/ll_card_word">
+
             <TextView
+                    android:id="@+id/tv_word"
                     android:text="Good Morning"
                     android:textSize="25sp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/tv_word"/>
+                    android:layout_height="wrap_content" />
             <TextView
+                    android:id="@+id/tv_word_example"
                     android:text='Ex : "Good morning Jean-Pierre ! How are you ?'
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/tv_word_example"
-            />
+                    android:layout_height="wrap_content" />
         </LinearLayout>
+
         <LinearLayout
                 android:background="@android:color/darker_gray"
                 android:layout_marginRight="30dp"
@@ -86,37 +89,27 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-            android:orientation="horizontal"
+    <!--RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:id="@+id/dummy_text"
             android:layout_width="match_parent"
-            android:layout_height="60dp">
-        <ImageButton
-                android:padding="5dp"
-                app:srcCompat="@drawable/ic_previous"
-                android:textColor="@android:color/white"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" android:id="@+id/bt_previous_word" android:layout_weight="1"
-                android:background="@drawable/button_base_background"/>
-        <ImageButton
-                app:srcCompat="@drawable/ic_eye_24"
-                android:textColor="@android:color/white"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" android:id="@+id/bt_show_word" android:layout_weight="2"
-                android:background="@drawable/button_base_background"/>
-        <ImageButton
-                app:srcCompat="@drawable/ic_next"
-                android:textColor="@android:color/white"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" android:id="@+id/bt_next_word" android:layout_weight="1"
-                android:background="@drawable/button_base_background"/>
-    </LinearLayout>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:textSize="20dp"/>
+
+    </RelativeLayout-->
+
+</android.support.v7.widget.CardView>

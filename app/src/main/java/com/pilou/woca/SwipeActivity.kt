@@ -21,14 +21,25 @@ import swipeable.com.layoutmanager.touchelper.ItemTouchHelper
 
 class SwipeActivity : AppCompatActivity() {
 
-    private var adapter: ListAdapter? = null
+    private var adapter: SwipeCardAdapter? = null
     private var swipeableTouchHelperCallback: SwipeableTouchHelperCallback ?= null
+    private var deckId:Int = -1
+
+    private var dbHandler: DatabaseHandler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_swipe)
-        setSupportActionBar(toolbar)
-        adapter = ListAdapter()
+
+        dbHandler = DatabaseHandler(this)
+
+        deckId = intent.getIntExtra("deckId",-1)
+
+        var cards : MutableList<Card> = mutableListOf()
+        cards = dbHandler!!.getCardsFromDeck(deckId)
+        cards.shuffle()
+
+        adapter = SwipeCardAdapter(cards)
         swipeableTouchHelperCallback = object : SwipeableTouchHelperCallback(object : OnItemSwiped {
             override fun onItemSwiped() {
                 adapter!!.removeTopItem()
@@ -49,18 +60,16 @@ class SwipeActivity : AppCompatActivity() {
             override fun onItemSwipedDown() {
                 Log.e("SWIPE", "DOWN")
             }
-        })
-
-        {
+        }) {
             override fun getAllowedSwipeDirectionsMovementFlags(viewHolder: RecyclerView.ViewHolder?): Int {
-                return ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT //or ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                    return ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT  //or ItemTouchHelper.UP or ItemTouchHelper.DOWN
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeableTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(recycler_view)
         recycler_view.setLayoutManager(
             SwipeableLayoutManager().setAngle(10)
-                .setAnimationDuratuion(300)
+                .setAnimationDuratuion(200)
                 .setMaxShowCount(3)
                 .setScaleGap(0.1f)
                 .setTransYGap(0)
@@ -69,7 +78,11 @@ class SwipeActivity : AppCompatActivity() {
 
         btn_swipe.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
-                itemTouchHelper.swipe(recycler_view.findViewHolderForAdapterPosition(0), ItemTouchHelper.RIGHT)
+
+                if (adapter!!.itemCount != 0 && recycler_view.findViewHolderForAdapterPosition(0)!!.isRecyclable) {
+                    itemTouchHelper.swipe(recycler_view.findViewHolderForAdapterPosition(0), ItemTouchHelper.RIGHT)
+                    Log.e("SwipeAct - btn swipe", "count : " + adapter!!.itemCount)
+                }
             }
         })
     }

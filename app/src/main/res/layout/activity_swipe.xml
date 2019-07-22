@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".SwipeActivity"
+        android:orientation="vertical"
+        android:background="@color/lightPink">
+
     <android.support.v7.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/btn_swipe"
-            android:orientation="vertical">
-    </android.support.v7.widget.RecyclerView>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"/>
 
     <android.support.v7.widget.AppCompatButton
+            android:background="@drawable/button_base_background"
             android:id="@+id/btn_swipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"/>
-</RelativeLayout>
+            android:layout_margin="5dp"
+            android:text="SWIPE"
+            android:textColor="@android:color/white"/>
+
+</LinearLayout>
