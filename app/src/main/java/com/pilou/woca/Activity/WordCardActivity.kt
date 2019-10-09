@@ -113,18 +113,28 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
             }
             R.id.menu_known_unknown_cards -> {
-                displayUnknownCards = !displayUnknownCards
-                if (displayUnknownCards) {
-                    cards = dbHandler!!.getUnknownCards(deckId)
+                var tmpCards = mutableListOf<Card>()
+                if (!displayUnknownCards) {
+                    tmpCards = dbHandler!!.getUnknownCards(deckId)
+                    if (tmpCards.size == 0) {
+                        Toast.makeText(applicationContext, "There is no 'Unknown cards'", Toast.LENGTH_SHORT).show()
+                        return super.onOptionsItemSelected(item)
+                    }
                     item.title = "Known cards"
                 }
                 else {
-                    cards = dbHandler!!.getKnownCards(deckId)
+                    tmpCards = dbHandler!!.getKnownCards(deckId)
+                    if (tmpCards.size == 0) {
+                        Toast.makeText(applicationContext, "There is no 'Known cards'", Toast.LENGTH_SHORT).show()
+                        return super.onOptionsItemSelected(item)
+                    }
                     item.title = "Unknown cards"
                 }
+                cards = tmpCards
                 cards.shuffle()
                 currentWordId = 0
                 displayWord(currentWordId)
+                displayUnknownCards = !displayUnknownCards
             }
             R.id.menu_edit_card -> {
                 val mIntent = Intent(this, EditCardActivity::class.java)
