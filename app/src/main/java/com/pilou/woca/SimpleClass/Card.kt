@@ -1,4 +1,4 @@
-package com.pilou.woca
+package com.pilou.woca.SimpleClass
 
 class Card {
     var id:Int = 0

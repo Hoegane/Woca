@@ -1,4 +1,4 @@
-package com.pilou.woca
+package com.pilou.woca.Activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -6,12 +6,12 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_edit_card.*
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.widget.Toast
-import android.support.v4.app.NavUtils
 import android.view.Menu
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_word_card.*
+import com.pilou.woca.SimpleClass.Card
+import com.pilou.woca.Database.DatabaseHandler
+import com.pilou.woca.R
 
 
 class EditCardActivity : AppCompatActivity(), View.OnClickListener {
@@ -114,12 +114,8 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
                     when(cardId) {
                         -1 -> {
-                            dbHandler!!.addCard(card)
-
-                            /*val success = dbHandler!!.addCard(card)
-                            if (success){
-                                val toast = Toast.makeText(this,"Saved Successfully", Toast.LENGTH_LONG).show()
-                            }*/
+                            if (dbHandler!!.addCard(card))
+                                Toast.makeText(this,"New card saved !", Toast.LENGTH_LONG).show()
                         }
                         else -> dbHandler!!.updateCard(card)
                     }

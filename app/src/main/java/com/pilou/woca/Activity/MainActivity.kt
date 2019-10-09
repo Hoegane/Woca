@@ -1,6 +1,5 @@
-package com.pilou.woca
+package com.pilou.woca.Activity
 
-import android.app.TaskStackBuilder
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -19,8 +18,9 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import android.R.id.edit
-import org.jetbrains.anko.toast
+import com.pilou.woca.Database.DatabaseHandler
+import com.pilou.woca.SimpleClass.Deck
+import com.pilou.woca.R
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //TODO : edit deck information (label ok, img nok)
     //TODO : improve icon shape, size, and provide a round one
     //TODO : allow user to change decks order
+    //TODO :
 
     var dbHandler: DatabaseHandler? = null
     var currentDeckPos:Int = 0
@@ -56,7 +57,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         tv_deck_label.text = decks[currentDeckPos].label
 
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 

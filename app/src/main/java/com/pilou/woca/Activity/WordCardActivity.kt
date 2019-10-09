@@ -1,4 +1,4 @@
-package com.pilou.woca
+package com.pilou.woca.Activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -11,21 +11,24 @@ import kotlinx.android.synthetic.main.activity_word_card.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
-import android.R.attr.key
 import android.content.Intent
-import org.jetbrains.anko.toast
+import android.util.Log
+import com.pilou.woca.SimpleClass.Card
+import com.pilou.woca.Database.DatabaseHandler
+import com.pilou.woca.R
 
 
 class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
     //TODO : modify view to allow user to swipe cards in a tinder way
     //TODO : integrate the word colors
-    //TODO : finish the feature 'mark word as learned'
 
     private var cards:MutableList<Card> = mutableListOf()
     private var deckId:Int = -1
     private var currentWordId:Int = 0
     private var showWordAndHideTranslation = true
+    private var displayUnknownCards=true
+    private lateinit var menu:Menu
 
     private var dbHandler: DatabaseHandler? = null
 
@@ -50,7 +53,11 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         if (cards.isEmpty()) {
-            cards = dbHandler!!.getCardsFromDeck(deckId)
+            //cards = dbHandler!!.getCardsFromDeck(deckId)
+            if (displayUnknownCards)
+                cards = dbHandler!!.getUnknownCards(deckId)
+            else
+                cards = dbHandler!!.getKnownCards(deckId)
             cards.shuffle()
         }
         else
@@ -62,6 +69,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.word_card, menu)
+        this.menu = menu!!
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -88,8 +96,35 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                     Toast.makeText(applicationContext, "Mark as learned", Toast.LENGTH_SHORT).show()
                 else
                     Toast.makeText(applicationContext, "Mark as unknown", Toast.LENGTH_SHORT).show()
-                dbHandler!!.updateCard(card)
 
+                if (dbHandler!!.updateCard(card)) {
+                    cards.removeAt(currentWordId)
+                    if (currentWordId<cards.size)
+                        displayWord(currentWordId)
+                    else if (currentWordId == cards.size && currentWordId > 0)
+                        displayWord(--currentWordId)
+                    else{
+                        Toast.makeText(applicationContext, "Le paquet ne contient plus de cartes", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+                else
+                    Toast.makeText(applicationContext, "Echec", Toast.LENGTH_SHORT).show()
+
+            }
+            R.id.menu_known_unknown_cards -> {
+                displayUnknownCards = !displayUnknownCards
+                if (displayUnknownCards) {
+                    cards = dbHandler!!.getUnknownCards(deckId)
+                    item.title = "Known cards"
+                }
+                else {
+                    cards = dbHandler!!.getKnownCards(deckId)
+                    item.title = "Unknown cards"
+                }
+                cards.shuffle()
+                currentWordId = 0
+                displayWord(currentWordId)
             }
             R.id.menu_edit_card -> {
                 val mIntent = Intent(this, EditCardActivity::class.java)

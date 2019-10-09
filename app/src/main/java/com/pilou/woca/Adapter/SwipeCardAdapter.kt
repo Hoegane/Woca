@@ -1,11 +1,11 @@
-package com.pilou.woca
+package com.pilou.woca.Adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import java.util.*
-import kotlin.collections.ArrayList
+import com.pilou.woca.SimpleClass.Card
+import com.pilou.woca.SimpleClass.CardItem
+import com.pilou.woca.R
 
 class SwipeCardAdapter (cards : MutableList<Card>) : RecyclerView.Adapter<CardItem>() {
 
@@ -16,7 +16,11 @@ class SwipeCardAdapter (cards : MutableList<Card>) : RecyclerView.Adapter<CardIt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardItem {
         return CardItem(
-            LayoutInflater.from(parent.context).inflate(R.layout.content_swipeable_card, parent, false)
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.content_swipeable_card,
+                parent,
+                false
+            )
         )
     }
 

@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@color/lightPink"
-        tools:context=".WordCardActivity"
+        tools:context=".Activity.WordCardActivity"
         android:orientation="vertical">
 
     <LinearLayout

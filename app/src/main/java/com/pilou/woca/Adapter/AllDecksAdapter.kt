@@ -1,11 +1,12 @@
-package com.pilou.woca
+package com.pilou.woca.Adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.ticket_all_words.view.*
+import com.pilou.woca.SimpleClass.Deck
+import com.pilou.woca.R
 import kotlinx.android.synthetic.main.ticket_deck.view.*
 
 class AllDecksAdapter(var context: Context, var decks:MutableList<Deck>): BaseAdapter() {

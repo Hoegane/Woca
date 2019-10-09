@@ -1,29 +1,28 @@
-package com.pilou.woca
+package com.pilou.woca.Activity
 
-import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity;
-import android.widget.ArrayAdapter
+import android.support.v7.app.AppCompatActivity
 
 import kotlinx.android.synthetic.main.activity_swipe.*
 import swipeable.com.layoutmanager.OnItemSwiped
 import swipeable.com.layoutmanager.SwipeableTouchHelperCallback
-import android.support.v7.widget.AppCompatButton
 import swipeable.com.layoutmanager.SwipeableLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
-import android.widget.Toast
-import kotlinx.android.synthetic.main.app_bar_main.*
+import android.widget.LinearLayout
+import com.pilou.woca.Database.DatabaseHandler
+import com.pilou.woca.R
+import com.pilou.woca.Adapter.SwipeCardAdapter
+import kotlinx.android.synthetic.main.activity_word_card.*
 import swipeable.com.layoutmanager.touchelper.ItemTouchHelper
-
 
 class SwipeActivity : AppCompatActivity() {
 
     private var adapter: SwipeCardAdapter? = null
     private var swipeableTouchHelperCallback: SwipeableTouchHelperCallback ?= null
     private var deckId:Int = -1
+    private var showWordAndHideTranslation = true
 
     private var dbHandler: DatabaseHandler? = null
 
@@ -35,8 +34,7 @@ class SwipeActivity : AppCompatActivity() {
 
         deckId = intent.getIntExtra("deckId",-1)
 
-        var cards : MutableList<Card> = mutableListOf()
-        cards = dbHandler!!.getCardsFromDeck(deckId)
+        val cards = dbHandler!!.getCardsFromDeck(deckId)
         cards.shuffle()
 
         adapter = SwipeCardAdapter(cards)
@@ -67,14 +65,14 @@ class SwipeActivity : AppCompatActivity() {
         }
         val itemTouchHelper = ItemTouchHelper(swipeableTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(recycler_view)
-        recycler_view.setLayoutManager(
-            SwipeableLayoutManager().setAngle(10)
+
+        recycler_view.layoutManager =  SwipeableLayoutManager().setAngle(10)
                 .setAnimationDuratuion(200)
                 .setMaxShowCount(3)
                 .setScaleGap(0.1f)
                 .setTransYGap(0)
-        )
-        recycler_view.setAdapter(adapter)
+
+        recycler_view.adapter = adapter
 
         btn_swipe.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
@@ -85,6 +83,29 @@ class SwipeActivity : AppCompatActivity() {
                 }
             }
         })
+
+        btn_show.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                if (showWordAndHideTranslation)
+                    showOrHide(ll_card_traduction)
+                else
+                    showOrHide(ll_card_word)
+            }
+        })
+    }
+
+    private fun showOrHide(linearLayout: LinearLayout) {
+        if (linearLayout.visibility == View.INVISIBLE)
+            linearLayout.visibility = View.VISIBLE
+        else
+            linearLayout.visibility = View.INVISIBLE
+    }
+
+    private fun reinitializeHidingStatus() {
+        if (ll_card_traduction.visibility == View.VISIBLE && showWordAndHideTranslation)
+            ll_card_traduction.visibility = View.INVISIBLE
+        else if (ll_card_traduction.visibility == View.VISIBLE && !showWordAndHideTranslation)
+            ll_card_word.visibility = View.INVISIBLE
     }
 
 }

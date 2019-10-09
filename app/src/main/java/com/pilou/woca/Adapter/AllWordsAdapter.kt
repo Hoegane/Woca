@@ -1,10 +1,12 @@
-package com.pilou.woca
+package com.pilou.woca.Adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import com.pilou.woca.SimpleClass.Card
+import com.pilou.woca.R
 import kotlinx.android.synthetic.main.ticket_all_words.view.*
 
 class AllWordsAdapter(var context: Context, var cards:MutableList<Card>): BaseAdapter() {

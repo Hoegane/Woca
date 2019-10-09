@@ -1,13 +1,17 @@
-package com.pilou.woca
+package com.pilou.woca.Database
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import android.widget.Toast
+import com.pilou.woca.SimpleClass.Card
+import com.pilou.woca.SimpleClass.Deck
 
-class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
+class DatabaseHandler(context: Context) : SQLiteOpenHelper(context,
+    DB_NAME, null,
+    DB_VERSIOM
+) {
 
     private val DATABASE_ALTER_TABLE_CARD_1 = ("ALTER TABLE " + CARD_TABLE_NAME + " ADD COLUMN " + CARD_IS_LEARNED + " INTEGER DEFAULT 0;")
 
@@ -131,7 +135,7 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
         return db.delete(CARD_TABLE_NAME, CARD_ID + "=" + card.id, null) > 0
     }
 
-    fun getCardById(card_id:Int):Card {
+    fun getCardById(card_id:Int): Card {
         val card = Card()
         val db = readableDatabase
         val selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_ID = $card_id"
@@ -151,20 +155,104 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                 card.is_learned = true
 
             card.translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
-            card.translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR)).toInt()
-            card.translation_1_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_EXAMPLE))
+            card.translation_1_color = cursor.getString(cursor.getColumnIndex(
+                CARD_TRANSLATION_1_COLOR
+            )).toInt()
+            card.translation_1_example = cursor.getString(cursor.getColumnIndex(
+                CARD_TRANSLATION_1_EXAMPLE
+            ))
 
             card.translation_2 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2))
-            card.translation_2_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_COLOR)).toInt()
-            card.translation_2_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_EXAMPLE))
+            card.translation_2_color = cursor.getString(cursor.getColumnIndex(
+                CARD_TRANSLATION_2_COLOR
+            )).toInt()
+            card.translation_2_example = cursor.getString(cursor.getColumnIndex(
+                CARD_TRANSLATION_2_EXAMPLE
+            ))
 
             card.translation_3 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3))
-            card.translation_3_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_COLOR)).toInt()
-            card.translation_3_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_EXAMPLE))
+            card.translation_3_color = cursor.getString(cursor.getColumnIndex(
+                CARD_TRANSLATION_3_COLOR
+            )).toInt()
+            card.translation_3_example = cursor.getString(cursor.getColumnIndex(
+                CARD_TRANSLATION_3_EXAMPLE
+            ))
         }
         cursor.close()
         db.close()
         return card
+    }
+
+    fun getUnknownCards(deckId: Int): MutableList<Card> {
+        return getCardsFromDeck(deckId, 0)
+    }
+
+    fun getKnownCards(deckId: Int): MutableList<Card> {
+        return getCardsFromDeck(deckId, 1)
+    }
+
+    fun getCardsFromDeck(deckId: Int, condition: Int): MutableList<Card> {
+        val allCards = mutableListOf<Card>()
+        val db = readableDatabase
+
+        val selectALLQuery:String
+
+        when (condition) {
+            0 -> selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_DECK_ID = $deckId AND $CARD_IS_LEARNED = 0" //All unknown cards
+            1 -> selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_DECK_ID = $deckId AND $CARD_IS_LEARNED = 1" //All known cards
+            else -> selectALLQuery = "SELECT * FROM $CARD_TABLE_NAME WHERE $CARD_DECK_ID = $deckId"
+        }
+
+        val cursor = db.rawQuery(selectALLQuery, null)
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    val card = Card()
+
+                    card.id = cursor.getString(cursor.getColumnIndex(CARD_ID)).toInt()
+                    card.deck_id = cursor.getString(cursor.getColumnIndex(CARD_DECK_ID)).toInt()
+                    card.word = cursor.getString(cursor.getColumnIndex(CARD_WORD))
+                    card.word_color = cursor.getString(cursor.getColumnIndex(CARD_WORD_COLOR)).toInt()
+                    card.word_example = cursor.getString(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
+
+                    if (cursor.getInt(cursor.getColumnIndex(CARD_IS_LEARNED)) == 0)
+                        card.is_learned = false
+                    else
+                        card.is_learned = true
+                    //Log.e(">>", card.id.toString() + " - " + card.word + ":" + tmp)
+                    //card.is_learned = cursor.getInt(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
+
+                    card.translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
+                    card.translation_1_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_COLOR
+                    )).toInt()
+                    card.translation_1_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_EXAMPLE
+                    ))
+
+                    card.translation_2 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2))
+                    card.translation_2_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_COLOR
+                    )).toInt()
+                    card.translation_2_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_EXAMPLE
+                    ))
+
+                    card.translation_3 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3))
+                    card.translation_3_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_COLOR
+                    )).toInt()
+                    card.translation_3_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_EXAMPLE
+                    ))
+
+                    allCards.add(card)
+                } while (cursor.moveToNext())
+            }
+        }
+        cursor.close()
+        db.close()
+        return allCards
     }
 
     fun getCardsFromDeck(deckId: Int): MutableList<Card> {
@@ -191,16 +279,28 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                     //card.is_learned = cursor.getInt(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
 
                     card.translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
-                    card.translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR)).toInt()
-                    card.translation_1_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_EXAMPLE))
+                    card.translation_1_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_COLOR
+                    )).toInt()
+                    card.translation_1_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_EXAMPLE
+                    ))
 
                     card.translation_2 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2))
-                    card.translation_2_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_COLOR)).toInt()
-                    card.translation_2_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_EXAMPLE))
+                    card.translation_2_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_COLOR
+                    )).toInt()
+                    card.translation_2_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_EXAMPLE
+                    ))
 
                     card.translation_3 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3))
-                    card.translation_3_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_COLOR)).toInt()
-                    card.translation_3_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_EXAMPLE))
+                    card.translation_3_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_COLOR
+                    )).toInt()
+                    card.translation_3_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_EXAMPLE
+                    ))
 
                     allCards.add(card)
                 } while (cursor.moveToNext())
@@ -235,16 +335,28 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                     //card.is_learned = cursor.getInt(cursor.getColumnIndex(CARD_WORD_EXAMPLE))
 
                     card.translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
-                    card.translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR)).toInt()
-                    card.translation_1_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_EXAMPLE))
+                    card.translation_1_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_COLOR
+                    )).toInt()
+                    card.translation_1_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_EXAMPLE
+                    ))
 
                     card.translation_2 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2))
-                    card.translation_2_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_COLOR)).toInt()
-                    card.translation_2_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_EXAMPLE))
+                    card.translation_2_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_COLOR
+                    )).toInt()
+                    card.translation_2_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_EXAMPLE
+                    ))
 
                     card.translation_3 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3))
-                    card.translation_3_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_COLOR)).toInt()
-                    card.translation_3_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_EXAMPLE))
+                    card.translation_3_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_COLOR
+                    )).toInt()
+                    card.translation_3_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_EXAMPLE
+                    ))
 
                     allCards.add(card)
                 } while (cursor.moveToNext())
@@ -271,17 +383,29 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
                     val is_learned = cursor.getString(cursor.getColumnIndex(CARD_IS_LEARNED))
 
                     val translation_1 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1))
-                    val translation_1_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_COLOR))
-                    val translation_1_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_1_EXAMPLE))
+                    val translation_1_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_COLOR
+                    ))
+                    val translation_1_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_1_EXAMPLE
+                    ))
 
                     val translation_2 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2))
-                    val translation_2_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_COLOR))
-                    val translation_2_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_2_EXAMPLE))
+                    val translation_2_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_COLOR
+                    ))
+                    val translation_2_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_2_EXAMPLE
+                    ))
 
 
                     val translation_3 = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3))
-                    val translation_3_color = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_COLOR))
-                    val translation_3_example = cursor.getString(cursor.getColumnIndex(CARD_TRANSLATION_3_EXAMPLE))
+                    val translation_3_color = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_COLOR
+                    ))
+                    val translation_3_example = cursor.getString(cursor.getColumnIndex(
+                        CARD_TRANSLATION_3_EXAMPLE
+                    ))
 
                     allCards = "$allCards\n$id $deck_id $word $word_color $word_example $is_learned $translation_1 $translation_1_color $translation_1_example $translation_2 $translation_2_color $translation_2_example $translation_3 $translation_3_color $translation_3_example"
                 } while (cursor.moveToNext())

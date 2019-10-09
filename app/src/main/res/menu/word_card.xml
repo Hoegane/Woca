@@ -5,11 +5,18 @@
         android:title="Marquer comme appris"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_checked_48_white"/>
+
     <item
         android:id="@+id/menu_reverse"
         android:title="Inverser"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_reverse_48"/>
+
+    <item
+        android:id="@+id/menu_known_unknown_cards"
+        android:title="Known cards"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/menu_edit_card"
         android:title="Modifier"
@@ -21,5 +28,4 @@
         android:title="Supprimer"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_delete_60"/>
-
 </menu>

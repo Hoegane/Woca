@@ -1,4 +1,4 @@
-package com.pilou.woca
+package com.pilou.woca.SimpleClass
 
 import android.widget.TextView
 import android.support.v7.widget.RecyclerView
