@@ -1,13 +1,13 @@
-package com.pilou.woca.Activity
+package com.pilou.woca.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.AdapterView
 import android.widget.Toast
-import com.pilou.woca.Adapter.AllDecksAdapter
-import com.pilou.woca.Database.DatabaseHandler
-import com.pilou.woca.SimpleClass.Deck
+import com.pilou.woca.adapter.AllDecksAdapter
+import com.pilou.woca.database.DatabaseHandler
+import com.pilou.woca.simpleClass.Deck
 import com.pilou.woca.R
 import kotlinx.android.synthetic.main.activity_all_decks.*
 import org.jetbrains.anko.alert

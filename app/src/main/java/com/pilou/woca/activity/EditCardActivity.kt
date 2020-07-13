@@ -1,17 +1,21 @@
-package com.pilou.woca.Activity
+package com.pilou.woca.activity
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_edit_card.*
 import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import android.view.Menu
 import android.view.MenuItem
-import com.pilou.woca.SimpleClass.Card
-import com.pilou.woca.Database.DatabaseHandler
+import com.pilou.woca.simpleClass.Card
+import com.pilou.woca.database.DatabaseHandler
 import com.pilou.woca.R
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class EditCardActivity : AppCompatActivity(), View.OnClickListener {
@@ -44,12 +48,16 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
             cardId = card.id
             et_word.setText(card.word)
             et_word_example.setText(card.word_example)
+            et_tags.setText(card.tags[0])
             et_translation_1.setText(card.translation_1)
             et_translation_1_example.setText(card.translation_1_example)
             et_translation_2.setText(card.translation_2)
             et_translation_2_example.setText(card.translation_2_example)
             et_translation_3.setText(card.translation_3)
             et_translation_3_example.setText(card.translation_3_example)
+
+            val dateFormatter:DateFormat = SimpleDateFormat("dd-MM-yyyy")
+            tv_creation_date.text = "Creation date : " + dateFormatter.format(card.creationDate)
         }
     }
 
@@ -102,6 +110,7 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
                     card.word = et_word.text.toString()
                     card.word_color = 0
                     card.word_example = et_word_example.text.toString()
+                    card.tags.add(et_tags.text.toString())
                     card.translation_1 = et_translation_1.text.toString()
                     card.translation_1_color = 0
                     card.translation_1_example = et_translation_1_example.text.toString()
@@ -114,6 +123,8 @@ class EditCardActivity : AppCompatActivity(), View.OnClickListener {
 
                     when(cardId) {
                         -1 -> {
+                            var calendar = Calendar.getInstance()
+                            card.creationDate = calendar.time
                             if (dbHandler!!.addCard(card))
                                 Toast.makeText(this,"New card saved !", Toast.LENGTH_LONG).show()
                         }

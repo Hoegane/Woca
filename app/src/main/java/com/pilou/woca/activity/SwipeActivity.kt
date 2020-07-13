@@ -1,19 +1,19 @@
-package com.pilou.woca.Activity
+package com.pilou.woca.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 import kotlinx.android.synthetic.main.activity_swipe.*
 import swipeable.com.layoutmanager.OnItemSwiped
 import swipeable.com.layoutmanager.SwipeableTouchHelperCallback
 import swipeable.com.layoutmanager.SwipeableLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
-import com.pilou.woca.Database.DatabaseHandler
+import com.pilou.woca.database.DatabaseHandler
 import com.pilou.woca.R
-import com.pilou.woca.Adapter.SwipeCardAdapter
+import com.pilou.woca.adapter.SwipeCardAdapter
 import kotlinx.android.synthetic.main.activity_word_card.*
 import swipeable.com.layoutmanager.touchelper.ItemTouchHelper
 

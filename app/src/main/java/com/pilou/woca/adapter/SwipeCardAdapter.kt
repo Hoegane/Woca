@@ -1,10 +1,10 @@
-package com.pilou.woca.Adapter
+package com.pilou.woca.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.support.v7.widget.RecyclerView
-import com.pilou.woca.SimpleClass.Card
-import com.pilou.woca.SimpleClass.CardItem
+import androidx.recyclerview.widget.RecyclerView
+import com.pilou.woca.simpleClass.Card
+import com.pilou.woca.simpleClass.CardItem
 import com.pilou.woca.R
 
 class SwipeCardAdapter (cards : MutableList<Card>) : RecyclerView.Adapter<CardItem>() {

@@ -1,29 +1,28 @@
-package com.pilou.woca.Adapter
+package com.pilou.woca.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import com.pilou.woca.SimpleClass.Card
+import com.pilou.woca.simpleClass.Deck
 import com.pilou.woca.R
-import kotlinx.android.synthetic.main.ticket_all_words.view.*
+import kotlinx.android.synthetic.main.ticket_deck.view.*
 
-class AllWordsAdapter(var context: Context, var cards:MutableList<Card>): BaseAdapter() {
+class AllDecksAdapter(var context: Context, var decks:MutableList<Deck>): BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val card = cards[position]
-        var cardView:View
+        val deck = decks[position]
+        val deckView:View
         val inflater = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        cardView = inflater.inflate(R.layout.ticket_all_words, null)
-        cardView.tv_word.text = card.word
-        cardView.tv_translation.text = card.translation_1
+        deckView = inflater.inflate(R.layout.ticket_deck, null)
+        deckView.tv_deck.text = deck.label
 
-        return cardView
+        return deckView
     }
 
     override fun getItem(position: Int): Any {
-        return cards[position]
+        return decks[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -31,7 +30,7 @@ class AllWordsAdapter(var context: Context, var cards:MutableList<Card>): BaseAd
     }
 
     override fun getCount(): Int {
-        return cards.size
+        return decks.size
     }
 
 }

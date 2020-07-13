@@ -1,4 +1,4 @@
-package com.pilou.woca.SimpleClass
+package com.pilou.woca.simpleClass
 
 class Deck {
     var id:Int = -1

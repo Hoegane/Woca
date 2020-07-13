@@ -1,13 +1,18 @@
-package com.pilou.woca.Activity
+package com.pilou.woca.activity
 
+import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.navigation.NavigationView
+import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -18,31 +23,52 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import com.pilou.woca.Database.DatabaseHandler
-import com.pilou.woca.SimpleClass.Deck
+import com.pilou.woca.database.DatabaseHandler
+import com.pilou.woca.simpleClass.Deck
 import com.pilou.woca.R
+import com.pilou.woca.simpleClass.JsonDeck
+import com.squareup.moshi.Moshi
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
 
+    //TODO : Add a Tag system
+    //  - adapt DB : OK
+    //  - adapt UI : NOK
+    //  - add filtering before show cards
     //TODO : Allow user to change a card from one deck to another
     //TODO : decks backup in firebase ?
     //TODO : Improve the the way the deckId is shared between all activities (global var ?)
     //TODO : edit deck information (label ok, img nok)
     //TODO : improve icon shape, size, and provide a round one
     //TODO : allow user to change decks order
-    //TODO :
+    //TODO : create a settings page
 
     var dbHandler: DatabaseHandler? = null
     var currentDeckPos:Int = 0
     var decks:MutableList<Deck> = mutableListOf()
     lateinit var channelMenu:SubMenu
     private var mPrefs:SharedPreferences ?= null
+    private val REQUEST_CODE_ASK_PERMISSIONS = 111
+    private val REQUEST_CODE_IMPORT_JSON_FILE = 112
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        /*var calendar = Calendar.getInstance()
+        var today:Date = calendar.time
+        var dateFormatter:DateFormat = SimpleDateFormat("dd-MM-yyyy")
+        Log.e("onCreate", ">>" + dateFormatter.format(today))
+
+        var today2:Date = dateFormatter.parse("31-07-1991")
+        Log.e("onCreate", ">>" + dateFormatter.format(today2))*/
 
         dbHandler = DatabaseHandler(this)
         decks = dbHandler!!.getAllDecks()
@@ -96,7 +122,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_settings -> return true
+            R.id.action_settings -> {
+                Toast.makeText(applicationContext, "Go to settings page (Feature not implememted yet)", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            R.id.action_import -> {
+
+                checkUserPermissionsBeforeImporting()
+                return true
+            }
+            R.id.action_export -> {
+                Toast.makeText(applicationContext, "export (Feature not implememted yet)", Toast.LENGTH_SHORT).show()
+                return true
+            }
             R.id.action_edit_deck -> {
                 val alert = AlertDialog.Builder(this)
                 var etDeckLabel: EditText
@@ -191,7 +229,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var mIntent:Intent ?= null
         when (view.id) {
             R.id.bt_show_word_card ->
-                if (dbHandler!!.getDeckSize(decks[currentDeckPos].id) != 0)
+                if (dbHandler!!.getUnknownCardsNumber(decks[currentDeckPos].id) != 0)
                     mIntent = Intent(this, WordCardActivity::class.java)
                 else
                     Toast.makeText(applicationContext, "Il n'y a pas de cartes dans le paquet", Toast.LENGTH_SHORT).show()
@@ -207,4 +245,69 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_IMPORT_JSON_FILE && resultCode == RESULT_OK)
+            importJson(data?.data) //The uri with the location of the file
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            REQUEST_CODE_ASK_PERMISSIONS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                pickFileToImport()
+            } else {
+                // Permission Denied
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                return
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun checkUserPermissionsBeforeImporting() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_ASK_PERMISSIONS)
+                return
+            }
+        }
+        pickFileToImport()
+    }
+    
+    private fun pickFileToImport() {
+        val intent = Intent()
+            .setType("*/*")
+            .setAction(Intent.ACTION_GET_CONTENT)
+
+        startActivityForResult(Intent.createChooser(intent, "Select a file"), REQUEST_CODE_IMPORT_JSON_FILE) // custom request code. 111 : import json
+    }
+
+    private fun importJson(selectedFile:Uri?) {
+
+        Log.e("importJson", ">> " + selectedFile?.path)
+        var filePath:String
+        if (selectedFile?.path!!.split(":").size > 1)
+            filePath = selectedFile.path!!.split(":")[1]
+        else
+            filePath = selectedFile.path.toString()
+
+        Log.e("importJson", ">>2 " + filePath)
+
+        //val jsonString:String = File("//com.android.providers.downloads.documents/document/1362").readText(Charsets.UTF_8)
+        val jsonString:String = File(filePath).readText(Charsets.UTF_8)
+
+        Toast.makeText(applicationContext, "import file : " + jsonString, Toast.LENGTH_SHORT).show()
+
+        val moshi = Moshi.Builder().build()
+        val deckOfNewCardsAdapter = moshi.adapter(JsonDeck::class.java)
+        val deckOfNewCards = deckOfNewCardsAdapter.fromJson(jsonString)
+
+        for (card in deckOfNewCards!!.cards) {
+            card.deck_id = decks[currentDeckPos].id
+            dbHandler!!.addCard(card)
+        }
+
+        Toast.makeText(applicationContext, deckOfNewCards.cards.size.toString() + " cards added to the current deck", Toast.LENGTH_SHORT).show()
+    }
 }

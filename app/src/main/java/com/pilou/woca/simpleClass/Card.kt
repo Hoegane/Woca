@@ -1,4 +1,6 @@
-package com.pilou.woca.SimpleClass
+package com.pilou.woca.simpleClass
+
+import java.util.*
 
 class Card {
     var id:Int = 0
@@ -6,7 +8,9 @@ class Card {
     var word:String = ""
     var word_color:Int = 0
     var word_example:String = ""
-    var is_learned:Boolean = false 
+    var is_learned:Boolean = false
+    var tags:MutableList<String> = mutableListOf()
+    var creationDate:Date = Date("31/07/1991")
 
     var translation_1:String = ""
     var translation_1_color:Int = 0

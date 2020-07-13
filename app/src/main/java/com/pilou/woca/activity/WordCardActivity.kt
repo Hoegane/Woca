@@ -1,7 +1,7 @@
-package com.pilou.woca.Activity
+package com.pilou.woca.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,9 +12,8 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 import android.content.Intent
-import android.util.Log
-import com.pilou.woca.SimpleClass.Card
-import com.pilou.woca.Database.DatabaseHandler
+import com.pilou.woca.simpleClass.Card
+import com.pilou.woca.database.DatabaseHandler
 import com.pilou.woca.R
 
 
@@ -26,8 +25,8 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     private var cards:MutableList<Card> = mutableListOf()
     private var deckId:Int = -1
     private var currentWordId:Int = 0
-    private var showWordAndHideTranslation = true
-    private var displayUnknownCards=true
+    private var isWordShowedAndMeaningHidden = true
+    private var displayUnknownCards = true
     private lateinit var menu:Menu
 
     private var dbHandler: DatabaseHandler? = null
@@ -76,14 +75,14 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId) {
             R.id.menu_reverse -> {
-                if (showWordAndHideTranslation) {
+                if (isWordShowedAndMeaningHidden) {
                     ll_card_traduction.visibility = View.VISIBLE
                     ll_card_word.visibility = View.INVISIBLE
                 }else {
                     ll_card_traduction.visibility = View.INVISIBLE
                     ll_card_word.visibility = View.VISIBLE
                 }
-                showWordAndHideTranslation = !showWordAndHideTranslation
+                isWordShowedAndMeaningHidden = !isWordShowedAndMeaningHidden
 
                 currentWordId = 0
                 cards.shuffle()
@@ -107,16 +106,18 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                         Toast.makeText(applicationContext, "Le paquet ne contient plus de cartes", Toast.LENGTH_SHORT).show()
                         finish()
                     }
+
+                    reinitializeHidingStatus()
                 }
                 else
                     Toast.makeText(applicationContext, "Echec", Toast.LENGTH_SHORT).show()
 
             }
             R.id.menu_known_unknown_cards -> {
-                var tmpCards = mutableListOf<Card>()
+                var tmpCards:List<Card>
                 if (!displayUnknownCards) {
                     tmpCards = dbHandler!!.getUnknownCards(deckId)
-                    if (tmpCards.size == 0) {
+                    if (tmpCards.isEmpty()) {
                         Toast.makeText(applicationContext, "There is no 'Unknown cards'", Toast.LENGTH_SHORT).show()
                         return super.onOptionsItemSelected(item)
                     }
@@ -124,7 +125,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 else {
                     tmpCards = dbHandler!!.getKnownCards(deckId)
-                    if (tmpCards.size == 0) {
+                    if (tmpCards.isEmpty()) {
                         Toast.makeText(applicationContext, "There is no 'Known cards'", Toast.LENGTH_SHORT).show()
                         return super.onOptionsItemSelected(item)
                     }
@@ -187,7 +188,7 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             R.id.bt_show_word -> {
-                if (showWordAndHideTranslation)
+                if (isWordShowedAndMeaningHidden)
                     showOrHide(ll_card_traduction)
                 else
                     showOrHide(ll_card_word)
@@ -230,10 +231,12 @@ class WordCardActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun reinitializeHidingStatus() {
-        if (ll_card_traduction.visibility == View.VISIBLE && showWordAndHideTranslation)
+        if (ll_card_traduction.visibility == View.VISIBLE && isWordShowedAndMeaningHidden)
             ll_card_traduction.visibility = View.INVISIBLE
-        else if (ll_card_traduction.visibility == View.VISIBLE && !showWordAndHideTranslation)
+        else if (ll_card_traduction.visibility == View.VISIBLE && !isWordShowedAndMeaningHidden)
             ll_card_word.visibility = View.INVISIBLE
     }
+
+
 
 }

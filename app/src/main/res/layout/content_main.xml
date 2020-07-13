@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/app_bar_main"
-        tools:context=".Activity.MainActivity" android:gravity="center|center_horizontal" android:orientation="vertical">
+        tools:context=".activity.MainActivity" android:gravity="center|center_horizontal" android:orientation="vertical">
 
     <LinearLayout
             android:orientation="vertical"
@@ -46,29 +46,53 @@
 
     <LinearLayout
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:gravity="end">
-        <Button
-                android:id="@+id/bt_show_word_card"
-                android:text="MONTRER CARTES"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/button_base_background"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/bt_show_word_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/button_base_background"
+                    android:text="CARTES"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            <Button
+                    android:id="@+id/bt_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/button_base_background"
+                    android:text="FILTER"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
 
         <Button
                 android:text="TOUT LE PAQUET"
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_base_background"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:id="@+id/bt_show_all_words"
                 android:layout_marginStart="8dp"
@@ -83,7 +107,7 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_base_background"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:id="@+id/bt_stats"
                 android:layout_marginStart="8dp"
